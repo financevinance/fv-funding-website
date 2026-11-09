@@ -1,0 +1,74 @@
+---
+// Animated hero scene: a factory at work and an office building rising floor by floor.
+// Pure SVG + CSS (animations live in src/styles/global.css). Reduced-motion users see the finished scene.
+---
+<div class="scene-card">
+  <div class="topbar" aria-hidden="true"></div>
+  <svg role="img" aria-label="Animation of a factory at work and an office building rising floor by floor" viewBox="0 0 460 380" width="460" height="380">
+<defs>
+<linearGradient id="fvg" x1="0" y1="0" x2="1" y2="0.3"><stop offset="0" stop-color="#FEDA75"/><stop offset="0.35" stop-color="#FA7C23"/><stop offset="0.65" stop-color="#F4645E"/><stop offset="1" stop-color="#EC4A87"/></linearGradient>
+<linearGradient id="fvgv" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FA7C23"/><stop offset="1" stop-color="#EC4A87"/></linearGradient>
+<radialGradient id="fvglow" cx="0.75" cy="0.2" r="0.6"><stop offset="0" stop-color="#EC4A87" stop-opacity="0.18"/><stop offset="1" stop-color="#14171C" stop-opacity="0"/></radialGradient>
+</defs>
+<rect x="0" y="0" width="460" height="380" fill="url(#fvglow)"/>
+<path class="fv-growth" d="M20 330 C 120 320, 170 250, 240 210 S 360 120, 440 60" fill="none" stroke="url(#fvg)" stroke-width="2" stroke-linecap="round" opacity="0.35"/>
+
+<g class="fv-crane">
+<line x1="425" y1="340" x2="425" y2="92" stroke="#3A404A" stroke-width="2"/>
+<line x1="437" y1="340" x2="437" y2="92" stroke="#3A404A" stroke-width="2"/>
+<path d="M425 340 L437 316 L425 292 L437 268 L425 244 L437 220 L425 196 L437 172 L425 148 L437 124 L425 100" fill="none" stroke="#2C3139" stroke-width="1.2"/>
+<line x1="250" y1="92" x2="452" y2="92" stroke="#3A404A" stroke-width="3" stroke-linecap="round"/>
+<line x1="431" y1="70" x2="270" y2="92" stroke="#2C3139" stroke-width="1.2"/>
+<line x1="431" y1="70" x2="452" y2="92" stroke="#2C3139" stroke-width="1.2"/>
+<rect x="420" y="96" width="22" height="16" rx="2" fill="#1B1F25" stroke="#3A404A" stroke-width="1.5"/>
+<g class="fv-hook">
+<line x1="340" y1="92" x2="340" y2="128" stroke="#5B6370" stroke-width="1.2"/>
+<rect x="318" y="128" width="44" height="10" rx="2" fill="url(#fvg)"/>
+</g>
+</g>
+
+<g>
+<g class="fv-floor fv-f1"><rect x="285" y="310" width="110" height="30" fill="#1B1F25" stroke="#3A404A" stroke-width="1.5"/><rect class="fv-win" x="298" y="319" width="20" height="12" rx="1.5" fill="#FEDA75"/><rect class="fv-win fv-w2" x="330" y="319" width="20" height="12" rx="1.5" fill="#FA7C23"/><rect class="fv-win fv-w3" x="362" y="319" width="20" height="12" rx="1.5" fill="#F4645E"/></g>
+<g class="fv-floor fv-f2"><rect x="285" y="280" width="110" height="30" fill="#1B1F25" stroke="#3A404A" stroke-width="1.5"/><rect class="fv-win fv-w2" x="298" y="289" width="20" height="12" rx="1.5" fill="#FA7C23"/><rect class="fv-win fv-w3" x="330" y="289" width="20" height="12" rx="1.5" fill="#F4645E"/><rect class="fv-win" x="362" y="289" width="20" height="12" rx="1.5" fill="#FEDA75"/></g>
+<g class="fv-floor fv-f3"><rect x="285" y="250" width="110" height="30" fill="#1B1F25" stroke="#3A404A" stroke-width="1.5"/><rect class="fv-win fv-w3" x="298" y="259" width="20" height="12" rx="1.5" fill="#F4645E"/><rect class="fv-win" x="330" y="259" width="20" height="12" rx="1.5" fill="#FEDA75"/><rect class="fv-win fv-w2" x="362" y="259" width="20" height="12" rx="1.5" fill="#EC4A87"/></g>
+<g class="fv-floor fv-f4"><rect x="285" y="220" width="110" height="30" fill="#1B1F25" stroke="#3A404A" stroke-width="1.5"/><rect class="fv-win" x="298" y="229" width="20" height="12" rx="1.5" fill="#FEDA75"/><rect class="fv-win fv-w2" x="330" y="229" width="20" height="12" rx="1.5" fill="#EC4A87"/><rect class="fv-win fv-w3" x="362" y="229" width="20" height="12" rx="1.5" fill="#FA7C23"/></g>
+<g class="fv-floor fv-f5"><rect x="285" y="190" width="110" height="30" fill="#1B1F25" stroke="#3A404A" stroke-width="1.5"/><rect class="fv-win fv-w3" x="298" y="199" width="20" height="12" rx="1.5" fill="#EC4A87"/><rect class="fv-win" x="330" y="199" width="20" height="12" rx="1.5" fill="#FA7C23"/><rect class="fv-win fv-w2" x="362" y="199" width="20" height="12" rx="1.5" fill="#FEDA75"/></g>
+<g class="fv-floor fv-f6"><rect x="285" y="160" width="110" height="30" fill="#1B1F25" stroke="#3A404A" stroke-width="1.5"/><rect class="fv-win fv-w2" x="298" y="169" width="20" height="12" rx="1.5" fill="#FA7C23"/><rect class="fv-win fv-w3" x="330" y="169" width="20" height="12" rx="1.5" fill="#D62976"/><rect class="fv-win" x="362" y="169" width="20" height="12" rx="1.5" fill="#F4645E"/></g>
+<g class="fv-floor fv-f7"><rect x="300" y="146" width="80" height="14" fill="#1B1F25" stroke="#3A404A" stroke-width="1.5"/><rect x="300" y="144" width="80" height="3" fill="url(#fvg)"/></g>
+</g>
+
+<g>
+<circle class="fv-smoke" cx="190" cy="150" r="9" fill="#2C3139"/>
+<circle class="fv-smoke fv-s2" cx="190" cy="150" r="9" fill="#2C3139"/>
+<circle class="fv-smoke fv-s3" cx="190" cy="150" r="9" fill="#2C3139"/>
+<rect x="181" y="156" width="18" height="70" fill="#1B1F25" stroke="#3A404A" stroke-width="1.5"/>
+<rect x="181" y="156" width="18" height="4" fill="url(#fvg)"/>
+<polygon points="30,250 30,214 75,236 75,214 120,236 120,214 165,236 165,214 210,236 210,250" fill="#1B1F25" stroke="#3A404A" stroke-width="1.5" stroke-linejoin="round"/>
+<line x1="30" y1="214" x2="75" y2="236" stroke="url(#fvg)" stroke-width="2"/>
+<line x1="75" y1="214" x2="120" y2="236" stroke="url(#fvg)" stroke-width="2"/>
+<line x1="120" y1="214" x2="165" y2="236" stroke="url(#fvg)" stroke-width="2"/>
+<line x1="165" y1="214" x2="210" y2="236" stroke="url(#fvg)" stroke-width="2"/>
+<rect x="30" y="250" width="180" height="90" fill="#1B1F25" stroke="#3A404A" stroke-width="1.5"/>
+<rect class="fv-fwin" x="44" y="264" width="28" height="18" rx="2" fill="#FA7C23"/>
+<rect class="fv-fwin fv-d2" x="84" y="264" width="28" height="18" rx="2" fill="#F4645E"/>
+<rect class="fv-fwin fv-d3" x="124" y="264" width="28" height="18" rx="2" fill="#EC4A87"/>
+<rect class="fv-fwin fv-d4" x="164" y="264" width="28" height="18" rx="2" fill="#FEDA75"/>
+<circle class="fv-gear" cx="62" cy="314" r="13" fill="none" stroke="#5B6370" stroke-width="7" stroke-dasharray="4.1 4.1"/>
+<circle cx="62" cy="314" r="5" fill="#14171C" stroke="#5B6370" stroke-width="2"/>
+<circle class="fv-gear-r" cx="86" cy="326" r="8" fill="none" stroke="#3A404A" stroke-width="5" stroke-dasharray="3.1 3.1"/>
+<rect x="112" y="300" width="34" height="40" fill="#14171C" stroke="#3A404A" stroke-width="1.5"/>
+<line x1="129" y1="300" x2="129" y2="340" stroke="#3A404A" stroke-width="1"/>
+</g>
+
+<line x1="150" y1="337" x2="282" y2="337" stroke="#2C3139" stroke-width="4" stroke-linecap="round"/>
+<g class="fv-box"><rect x="152" y="324" width="12" height="10" rx="1.5" fill="url(#fvg)"/></g>
+<g class="fv-box fv-b2"><rect x="152" y="324" width="12" height="10" rx="1.5" fill="url(#fvg)"/></g>
+<g class="fv-box fv-b3"><rect x="152" y="324" width="12" height="10" rx="1.5" fill="url(#fvg)"/></g>
+
+<line x1="12" y1="340" x2="448" y2="340" stroke="#3A404A" stroke-width="1.5"/>
+</svg>
+  <div class="scene-foot">
+    <span style="display:inline-flex;gap:10px;align-items:center"><span class="stepword">PLAN</span><span style="color:var(--line-dark-2)">→</span><span class="stepword s2">FUND</span><span style="color:var(--line-dark-2)">→</span><span class="stepword s3">BUILD</span></span>
+    <span style="color:var(--grey-dark-bg)">FUNDING THAT BUILDS BUSINESSES</span>
+  </div>
+</div>

@@ -1,0 +1,119 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Faq from '../../components/Faq.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { getCollection, render } from 'astro:content';
+import settings from '../../data/settings.json';
+
+export async function getStaticPaths() {
+  const services = await getCollection('services', (s) => !s.data.hidden);
+  return services.map((s) => ({ params: { slug: s.id }, props: { entry: s, all: services } }));
+}
+const { entry, all } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const related = d.related.map((id) => all.find((s) => s.id === id)).filter(Boolean);
+const serviceSchema = {
+  '@context': 'https://schema.org', '@type': 'Service', name: d.title, description: d.seoDescription || d.summary,
+  serviceType: d.title, areaServed: settings.areaServed, provider: { '@id': new URL('/#organization', Astro.site).href },
+  url: new URL(`/services/${entry.id}/`, Astro.site).href,
+};
+---
+<Base title={d.seoTitle || `${d.title} | FV Funding`} description={d.seoDescription || d.summary} schema={serviceSchema}>
+  <PageHero crumbs={[{ href: '/services/', label: 'Services' }, { label: d.title }]} eyebrow={d.code ? `Service · ${d.code}` : 'Service'} title={d.heroTitle} highlight={d.heroHighlight} text={d.heroText}>
+    <div class="btn-row mt-32">
+      <a class="btn btn-grad btn-lg" href={`/book/?service=${entry.id}`}>Book a review for {d.title.toLowerCase().startsWith('government') ? 'schemes' : d.title.toLowerCase()}</a>
+      {d.documents.length > 0 && <a class="btn btn-ghost-dark btn-lg" href="#documents">See documents needed</a>}
+    </div>
+  </PageHero>
+
+  {d.forms.length > 0 && (
+    <section class="bg-white border-y">
+      <div class="wrap section">
+        <p class="eyebrow">What it covers</p>
+        <h2 class="h2">The common forms, and what each one is for.</h2>
+        <div class="grid cols-auto-260 mt-40">
+          {d.forms.map((f) => (<div class="card card-paper"><p class="num">{f.label}</p><p class="title">{f.name}</p><p class="text">{f.text}</p></div>))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {d.suits.length > 0 && (
+    <section class="bg-paper">
+      <div class="wrap section split">
+        <div class="side"><p class="eyebrow">Who it suits</p><h2 class="h2">Is this the right facility for you?</h2></div>
+        <ul class="rule-list main" style="border-top-color:var(--line-2)">{d.suits.map((x) => <li>{x}</li>)}</ul>
+      </div>
+    </section>
+  )}
+
+  {d.assess.length > 0 && (
+    <section class="bg-dark">
+      <div class="wrap section">
+        <p class="eyebrow">How lenders look at it</p>
+        <h2 class="h2">What a credit officer checks first.</h2>
+        <div class="panel-grid mt-40">
+          {d.assess.map((a, i) => (<div><p class="n">{String(i + 1).padStart(2, '0')}</p><p class="t">{a.title}</p><p class="d">{a.text}</p></div>))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {d.help.length > 0 && (
+    <section class="bg-white">
+      <div class="wrap section">
+        <p class="eyebrow">How we help</p>
+        <h2 class="h2">From your numbers to a facility you can use.</h2>
+        <ol class="grid cols-auto-260 mt-40" style="list-style:none;padding:0">
+          {d.help.map((h, i) => (<li class="top-rule"><p style="font-family:var(--mono);font-size:24px">{i + 1}</p><p class="mt-8" style="font-size:18px;font-weight:600">{h.title}</p><p class="mt-8 muted" style="font-size:15px;line-height:1.6">{h.text}</p></li>))}
+        </ol>
+        {d.mistakes.length > 0 && (
+          <div class="card card-paper mt-48"><p class="mono muted">Mistakes we see often</p><ul class="mt-12" style="padding-left:20px;font-size:16px;line-height:1.85">{d.mistakes.map((m) => <li>{m}</li>)}</ul></div>
+        )}
+        {d.note && <p class="tiny muted mt-24" style="max-width:860px">{d.note}</p>}
+      </div>
+    </section>
+  )}
+
+  {d.documents.length > 0 && (
+    <section id="documents" class="bg-paper border-t">
+      <div class="wrap section split">
+        <div class="side">
+          <p class="eyebrow">Documents</p>
+          <h2 class="h2">What this file usually needs.</h2>
+          <p class="mt-16 muted" style="font-size:16px;line-height:1.6;max-width:420px">Lenders differ. We confirm the exact list for your case after the first call.</p>
+        </div>
+        <ul class="rule-list main">{d.documents.map((x) => <li><span class="box-tick" aria-hidden="true"></span>{x}</li>)}</ul>
+      </div>
+    </section>
+  )}
+
+  {entry.body && entry.body.trim().length > 0 && (
+    <section class="bg-white"><div class="wrap narrow section prose"><Content /></div></section>
+  )}
+
+  {d.faqs.length > 0 && (
+    <section class="bg-white border-t">
+      <div class="wrap narrow section">
+        <p class="eyebrow">Questions</p>
+        <h2 class="h2">{d.title}, answered.</h2>
+        <div class="mt-32"><Faq items={d.faqs} /></div>
+      </div>
+    </section>
+  )}
+
+  {related.length > 0 && (
+    <section class="bg-paper border-t">
+      <div class="wrap" style="padding-top:clamp(48px,6vw,80px);padding-bottom:clamp(48px,6vw,80px)">
+        <h2 style="font-size:24px;font-weight:700">Often considered alongside</h2>
+        <div class="grid cols-auto-260 mt-24">
+          {related.map((r) => r && (<a class="card card-link" href={`/services/${r.id}/`}><p class="title" style="margin-top:0;font-size:18px">{r.data.title}</p><p class="text">{r.data.summary}</p></a>))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <CtaBand title={`Talk through your ${d.title.toLowerCase().startsWith('government') ? 'scheme eligibility' : d.title.toLowerCase()} need.`} button="Book a free funding review" href={`/book/?service=${entry.id}`} />
+</Base>

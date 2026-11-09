@@ -1,0 +1,107 @@
+{
+  "seoTitle": "FV Funding | Business Funding Advisory for MSMEs in Gujarat",
+  "seoDescription": "CA-led business funding advisory. Working capital, term loans, CAPEX, project and machinery finance, and government scheme support for MSMEs, manufacturers and traders.",
+  "hero": {
+    "eyebrow": "Business funding advisory",
+    "titleLine1": "The right funding.",
+    "titleLine2": "Structured right.",
+    "subtitle": "CA-led business funding advisory for MSMEs, manufacturers, traders and growing companies.",
+    "primaryCta": "Book a free 30-minute funding review",
+    "secondaryCta": "What fits my business?",
+    "serviceLine": "Working capital · Term loans · CAPEX · Project finance · Machinery finance"
+  },
+  "problem": {
+    "eyebrow": "Why files get declined",
+    "title": "Good businesses get rejected for avoidable reasons.",
+    "items": [
+      { "title": "Wrong lender.", "text": "Every bank and NBFC has its own appetite. A good file sent to the wrong desk still comes back." },
+      { "title": "Wrong product.", "text": "A term loan asked for when the need is working capital, or the reverse, strains cash flow from day one." },
+      { "title": "Numbers told the wrong way.", "text": "Presented the way an accountant files them, not the way a credit officer reads them." }
+    ],
+    "closing": "Lenders sanction loans. We make sure your file deserves a yes."
+  },
+  "services": {
+    "eyebrow": "What we help you raise",
+    "title": "Nine ways to fund a growing business.",
+    "schemeNote": "Scheme benefits are decided and paid by the government agency concerned, usually after the loan is disbursed and conditions are met. We check eligibility and handle the filing; we do not guarantee approval."
+  },
+  "process": {
+    "eyebrow": "How we work",
+    "title": "One advisor. Six steps. No guesswork.",
+    "steps": [
+      { "title": "Discovery call", "text": "Your requirement, timeline and existing borrowings." },
+      { "title": "Financial diagnosis", "text": "Financials, GST returns, bank statements and credit reports, read through a lender's eyes." },
+      { "title": "Funding structure", "text": "The right product, amount, tenure and security for your cash flows." },
+      { "title": "Lender-ready file", "text": "CMA data, project report and a complete document set." },
+      { "title": "Lender matching and application", "text": "We approach suitable banks and NBFCs and handle their queries." },
+      { "title": "Sanction to disbursement", "text": "Term-sheet review, follow-up to disbursement, and annual renewal support." }
+    ]
+  },
+  "check": {
+    "eyebrow": "Start here",
+    "title": "What do you need funding for?",
+    "text": "Pick the closest one. The Funding Readiness Check takes about two minutes.",
+    "options": [
+      { "label": "Run the business", "need": "operations" },
+      { "label": "Buy machinery", "need": "machinery" },
+      { "label": "Expand", "need": "expansion" },
+      { "label": "A new project", "need": "project" }
+    ]
+  },
+  "why": {
+    "eyebrow": "Why FV Funding",
+    "title": "Advice first. Then the lender.",
+    "pillars": [
+      { "title": "CA-led, not sales-led.", "text": "Your file is built by a qualified Chartered Accountant, not a loan agent chasing a target." },
+      { "title": "Business funding only.", "text": "No home loans, car loans or credit cards. Just facilities that run and grow businesses." },
+      { "title": "The right facility first.", "text": "We recommend what fits your cash flows, then find the lender, not the reverse." },
+      { "title": "Fees in writing, before we start.", "text": "Agreed and signed before any work begins." },
+      { "title": "One point of contact.", "text": "From the first call to disbursement and renewal." }
+    ],
+    "do": [
+      "Diagnose your financials the way a lender will",
+      "Structure the right type and size of facility",
+      "Prepare a complete, lender-ready file",
+      "Approach banks and NBFCs whose criteria you fit",
+      "Follow up to disbursement and renewal"
+    ],
+    "dont": [
+      "Lend money: lenders decide every sanction",
+      "Guarantee approval",
+      "Handle home, car or personal loans",
+      "Charge anything not agreed in writing"
+    ]
+  },
+  "who": {
+    "eyebrow": "Who we work with",
+    "title": "Businesses that make, trade and serve.",
+    "segments": [
+      "Manufacturers and processors",
+      "Traders, distributors and stockists",
+      "Service businesses and professional firms",
+      "Exporters and importers",
+      "Growing companies and funded startups with revenue"
+    ]
+  },
+  "bring": {
+    "eyebrow": "Before your first meeting",
+    "title": "Bring these, and the first call goes twice as far.",
+    "text": "You don't need everything to book. Whatever you have helps us give a sharper first view.",
+    "items": [
+      "Last 3 years' financial statements and ITRs",
+      "Last 12 months' bank statements (all current accounts)",
+      "GST returns for the last 12 months",
+      "Sanction letters and repayment schedules of existing loans",
+      "KYC of the business and promoters"
+    ]
+  },
+  "insights": {
+    "eyebrow": "Insights",
+    "title": "Notes from the credit side of the table."
+  },
+  "closing": {
+    "title": "Start with a free 30-minute",
+    "titleHighlight": "funding review.",
+    "text": "Choose what it's about. Pick a time on the next screen."
+  }
+}

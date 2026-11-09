@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import S from '../data/settings.json';
+---
+<Base title="Disclaimer | FV Funding" description="FV Funding is a business funding advisor, not a lender.">
+  <PageHero crumbs={[{ label: 'Disclaimer' }]} title="Disclaimer" text="Last updated: 9 November 2026" />
+  <section class="bg-white"><div class="wrap narrow section prose">
+    <p><strong>{S.brandName} is a business funding advisor, not a bank, NBFC or lender.</strong> We do not lend money, accept deposits or make credit decisions.</p>
+    <ul>
+      <li>Every sanction, limit, interest rate and term is decided by the lender concerned, under its own policies.</li>
+      <li>No outcome is guaranteed. Preparing a strong file improves your chances; it does not assure approval.</li>
+      <li>Government scheme benefits are decided and paid by the agency concerned, usually after the loan is disbursed and conditions are met. We check eligibility and handle the filing; we do not guarantee approval.</li>
+      <li>Information on this website is general and may change. Scheme and lender terms change from time to time; we confirm current terms for your case.</li>
+      <li>We do not ask for passwords, OTPs or upfront payments to "release" a loan. If anyone claiming to represent us does, do not pay, and write to <a href={`mailto:${S.email}`}>{S.email}</a>.</li>
+    </ul>
+  </div></section>
+</Base>

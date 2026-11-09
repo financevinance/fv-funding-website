@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { getCollection } from 'astro:content';
+const services = (await getCollection('services', (s) => !s.data.hidden && s.data.documents.length > 0)).sort((a, b) => a.data.order - b.data.order);
+---
+<Base title="Document Checklists for Business Loans | FV Funding" description="Document checklists for working capital, term loans, CAPEX, machinery, project finance, secured and unsecured business loans, and government schemes.">
+  <PageHero crumbs={[{ label: 'Document checklists' }]} eyebrow="Document checklists" title="What each funding file" highlight="usually needs." text="Lenders differ, and we confirm the exact list after the first call. These lists cover what is asked for most often.">
+    <div class="btn-row mt-32"><button class="btn btn-ghost-dark btn-lg" type="button" onclick="window.print()">Print or save as PDF</button></div>
+  </PageHero>
+  <section class="bg-white">
+    <div class="wrap section grid cols-auto-300" style="align-items:start">
+      {services.map((s) => (
+        <div class="card" id={s.id}>
+          <p class="num">{s.data.code}</p>
+          <h2 class="title">{s.data.title}</h2>
+          <ul class="rule-list mt-16">{s.data.documents.map((x) => <li style="font-size:15px;padding:12px 0"><span class="box-tick" aria-hidden="true" style="width:18px;height:18px"></span>{x}</li>)}</ul>
+          <p class="more"><a href={`/services/${s.id}/`}>About {s.data.title} →</a></p>
+        </div>
+      ))}
+    </div>
+  </section>
+  <CtaBand title="Missing a few documents?" text="Book anyway. We’ll tell you what matters most for your case." />
+</Base>

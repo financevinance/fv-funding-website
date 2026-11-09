@@ -1,0 +1,66 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import settings from '../data/settings.json';
+const contactPage = { '@context': 'https://schema.org', '@type': 'ContactPage', name: 'Contact FV Funding', url: new URL('/contact/', Astro.site).href };
+---
+<Base title="Contact FV Funding | Business Funding Advisory" description={`Email ${settings.email} or book a free 30-minute funding review. ${settings.hoursText}.`} schema={contactPage}>
+  <PageHero crumbs={[{ label: 'Contact' }]} eyebrow="Contact" title="Talk to us." text="The fastest way to a useful answer is a free 30-minute review. For anything else, write to us." >
+    <div class="btn-row mt-32"><a class="btn btn-grad btn-lg" href="/book/">Book a free funding review</a></div>
+  </PageHero>
+  <section class="bg-white">
+    <div class="wrap section split">
+      <div class="side">
+        <div class="grid" style="gap:12px">
+          <div class="card card-paper"><p class="mono muted">Email</p><p class="mt-8" style="font-size:18px;font-weight:600"><a href={`mailto:${settings.email}`}>{settings.email}</a></p></div>
+          {settings.phone && <div class="card card-paper"><p class="mono muted">Phone</p><p class="mt-8" style="font-size:18px;font-weight:600"><a href={`tel:${settings.phone.replace(/\s/g, '')}`}>{settings.phone}</a></p></div>}
+          {settings.whatsapp && <div class="card card-paper"><p class="mono muted">WhatsApp</p><p class="mt-8" style="font-size:18px;font-weight:600"><a href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}`} rel="noopener" target="_blank">Chat with us</a></p></div>}
+          <div class="card card-paper"><p class="mono muted">Location</p><p class="mt-8" style="font-size:18px;font-weight:600">{settings.city}, {settings.state}, {settings.country}</p></div>
+          <div class="card card-paper"><p class="mono muted">Hours</p><p class="mt-8" style="font-size:18px;font-weight:600">{settings.hoursText}</p></div>
+        </div>
+      </div>
+      <div class="main">
+        <form class="panel" name="contact" method="POST" action="/contact/?sent=1" data-netlify="true" netlify-honeypot="company_website" data-contact-form novalidate>
+          <input type="hidden" name="form-name" value="contact" />
+          <p class="hp"><label>Leave this empty <input name="company_website" tabindex="-1" autocomplete="off" /></label></p>
+          <h2 style="font-size:24px;font-weight:700">Send a message</h2>
+          <div class="grid cols-auto-260 mt-24" style="gap:18px">
+            <div class="field"><label for="c-name">Full name</label><input class="input" id="c-name" name="name" autocomplete="name" required /></div>
+            <div class="field"><label for="c-email">Email</label><input class="input" id="c-email" name="email" type="email" autocomplete="email" required /></div>
+            <div class="field"><label for="c-phone">Mobile <span class="opt">(optional)</span></label><input class="input" id="c-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" /></div>
+            <div class="field"><label for="c-company">Business name <span class="opt">(optional)</span></label><input class="input" id="c-company" name="business" autocomplete="organization" /></div>
+          </div>
+          <div class="field mt-16"><label for="c-msg">Message</label><textarea class="input" id="c-msg" name="message" rows="5" maxlength="2000" required></textarea></div>
+          <label class="check mt-16"><input type="checkbox" name="consent" value="yes" required /><span>I agree that {settings.brandName} may use these details to reply to my message, as set out in the <a href="/privacy/">privacy notice</a>.</span></label>
+          <p class="err" role="alert" data-contact-error hidden></p>
+          <div class="nav-row"><span class="tiny muted">We never ask for documents or passwords through this form.</span><button class="btn btn-dark" type="submit">Send message</button></div>
+          <p class="mt-16" data-contact-ok hidden role="status" style="font-weight:600">Thank you. Your message has been sent; we will reply by email.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+  <script>
+    const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+    const err = document.querySelector<HTMLElement>('[data-contact-error]');
+    const ok = document.querySelector<HTMLElement>('[data-contact-ok]');
+    if (new URLSearchParams(location.search).get('sent') && ok) ok.hidden = false;
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!err || !ok) return;
+      err.hidden = true;
+      const fd = new FormData(form);
+      const email = String(fd.get('email') || '').trim();
+      if (String(fd.get('name') || '').trim().length < 2) { err.textContent = 'Please enter your name.'; err.hidden = false; return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.textContent = 'Please enter a valid email address.'; err.hidden = false; return; }
+      if (String(fd.get('message') || '').trim().length < 5) { err.textContent = 'Please write a short message.'; err.hidden = false; return; }
+      if (!fd.get('consent')) { err.textContent = 'Please tick the consent box so we can reply.'; err.hidden = false; return; }
+      try {
+        const res = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(fd as any).toString() });
+        if (!res.ok) throw new Error(String(res.status));
+        form.reset(); ok.hidden = false;
+      } catch {
+        err.textContent = 'Sorry, the message could not be sent. Please email us directly.'; err.hidden = false;
+      }
+    });
+  </script>
+</Base>

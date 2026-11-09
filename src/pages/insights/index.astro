@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { getCollection } from 'astro:content';
+const posts = (await getCollection('insights', (p) => !p.data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const fmt = (d: Date) => d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+---
+<Base title="Insights | Business Funding Explained | FV Funding" description="Practical notes on business loans, working capital, CMA data, project reports and government schemes, from the credit side of the table.">
+  <PageHero crumbs={[{ label: 'Insights' }]} eyebrow="Insights" title="Notes from the credit side" highlight="of the table." text="Plain explanations of how lenders think, and what that means for your funding." />
+  <section class="bg-paper">
+    <div class="wrap section">
+      {posts.length === 0 && <p class="muted">New articles are on the way.</p>}
+      <div class="grid cols-auto-300">
+        {posts.map((p) => (
+          <a class="card card-link" href={`/insights/${p.id}/`}>
+            {p.data.cover && <img src={p.data.cover} alt={p.data.coverAlt || ''} loading="lazy" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;margin-bottom:16px" />}
+            <p class="num">{p.data.category} · {fmt(p.data.date)}</p>
+            <h2 class="title">{p.data.title}</h2>
+            <p class="text">{p.data.summary}</p>
+            <p class="more">Read →</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+  <CtaBand />
+</Base>

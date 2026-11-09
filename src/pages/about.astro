@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import home from '../data/home.json';
+import settings from '../data/settings.json';
+---
+<Base title="About FV Funding | Business Funding Advisory by Finance Vinance" description="FV Funding is the CA-led business funding advisory of Finance Vinance. Advice first, then the lender.">
+  <PageHero crumbs={[{ label: 'About' }]} eyebrow="About FV Funding" title="Advice first." highlight="Then the lender." />
+  <section class="bg-white">
+    <div class="wrap narrow section prose">
+      <p style="font-size:20px;line-height:1.6;color:var(--ink)">Good businesses get rejected for avoidable reasons. Wrong lender. Wrong product. Numbers presented the way an accountant files them, not the way a credit officer reads them.</p>
+      <p>{settings.brandName} is the business funding advisory of {settings.parentName}, led by a Chartered Accountant. We study your financials the way a lender will, work out the right type and size of facility, prepare a lender-ready file, and approach banks and NBFCs whose criteria you fit.</p>
+      <p>We work only on business funding: working capital, term loans, CAPEX, machinery, project and expansion finance, and the government schemes that lower their cost. No home loans, car loans or credit cards.</p>
+      <h2>What we hold ourselves to</h2>
+    </div>
+    <div class="wrap section" style="padding-top:0">
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:0 48px">
+        {home.why.pillars.map((p) => (<div class="pillar"><p style="font-size:19px;font-weight:600">{p.title}</p><p class="mt-8 muted" style="font-size:16px;line-height:1.6">{p.text}</p></div>))}
+      </div>
+    </div>
+  </section>
+  <section class="bg-paper border-t">
+    <div class="wrap section grid cols-auto-300">
+      <div class="card"><p class="mono muted">Based in</p><p class="mt-12" style="font-size:18px;font-weight:600">{settings.city}, {settings.state}</p><p class="mt-8 muted">Working with businesses across {settings.state} and India, by video, phone and in person.</p></div>
+      <div class="card"><p class="mono muted">Hours</p><p class="mt-12" style="font-size:18px;font-weight:600">{settings.hoursText}</p><p class="mt-8 muted">Book a slot online, any day of the week.</p></div>
+      <div class="card"><p class="mono muted">Contact</p><p class="mt-12" style="font-size:18px;font-weight:600"><a href={`mailto:${settings.email}`}>{settings.email}</a></p><p class="mt-8 muted">We reply to every enquiry.</p></div>
+    </div>
+  </section>
+  <CtaBand title="Let’s look at your numbers together." />
+</Base>

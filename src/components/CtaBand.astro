@@ -1,0 +1,15 @@
+---
+import settings from '../data/settings.json';
+interface Props { title?: string; text?: string; button?: string; href?: string; }
+const { title = 'Not sure which facility fits?', text = `Free 30-minute review · ${settings.hoursText}`, button = 'Book a free funding review', href = '/book/' } = Astro.props;
+---
+<section class="bg-dark relative">
+  <div class="glow glow-bl" aria-hidden="true"></div>
+  <div class="wrap section" style="position:relative;display:flex;flex-wrap:wrap;gap:32px;align-items:center;justify-content:space-between">
+    <div style="flex:1 1 480px;min-width:0">
+      <h2 class="h2">{title}</h2>
+      <p class="mt-12" style="font-size:17px;color:var(--soft)">{text}</p>
+    </div>
+    <a class="btn btn-grad btn-lg" href={href}>{button}</a>
+  </div>
+</section>

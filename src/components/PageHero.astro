@@ -1,0 +1,25 @@
+---
+interface Props { crumbs?: { href?: string; label: string }[]; eyebrow?: string; title: string; highlight?: string; text?: string; }
+const { crumbs = [], eyebrow, title, highlight, text } = Astro.props;
+const trail = [{ href: '/', label: 'Home' }, ...crumbs];
+const crumbSchema = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: trail.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.label, ...(c.href ? { item: new URL(c.href, Astro.site).href } : {}) })) };
+---
+<section class="bg-dark relative page-hero">
+  <div class="glow glow-tr" aria-hidden="true"></div>
+  <div class="wrap">
+    <nav aria-label="Breadcrumb" class="crumbs">
+      {trail.map((c, i) => (
+        <>
+          {i > 0 && <span aria-hidden="true">/</span>}
+          {c.href && i < trail.length - 1 ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}
+        </>
+      ))}
+    </nav>
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    {!eyebrow && <div style="height:40px"></div>}
+    <h1 class="h1" style="max-width:900px">{title}{highlight && <> <span class="grad-text">{highlight}</span></>}</h1>
+    {text && <p class="lead mt-24">{text}</p>}
+    <slot />
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(crumbSchema)} />
+</section>

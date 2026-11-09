@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import S from '../data/settings.json';
+---
+<Base title="Grievance Redressal | FV Funding" description="How to raise a complaint with FV Funding and how we respond.">
+  <PageHero crumbs={[{ label: 'Grievance redressal' }]} title="Grievance redressal" text="If something has gone wrong, we want to know." />
+  <section class="bg-white"><div class="wrap narrow section prose">
+    <h2>How to raise a concern</h2>
+    <p>Write to <a href={`mailto:${S.email}?subject=Grievance`}>{S.email}</a> with the subject "Grievance". Include your name, contact details, and what happened, with dates.</p>
+    <h2>What happens next</h2>
+    <ul><li>We acknowledge your email.</li><li>We look into it and reply with our response and any action taken.</li><li>If you are not satisfied, reply to that email and it will be reviewed again at a senior level.</li></ul>
+    <h2>Complaints about a lender</h2>
+    <p>Decisions on loans are made by the lender. A complaint about a lender's decision or conduct should go to that lender's grievance officer; if unresolved, you may approach the Reserve Bank of India's complaint management system. We can help you with the process.</p>
+    <h2>Personal data</h2>
+    <p>For requests about your personal data, see our <a href="/privacy/">privacy notice</a>.</p>
+  </div></section>
+</Base>

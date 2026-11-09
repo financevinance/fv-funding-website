@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import home from '../data/home.json';
+const detail = [
+  { give: 'Your requirement, timeline and a view of existing loans.', get: 'A first view of which facility fits, and what we would need.' },
+  { give: 'Financial statements, GST returns, bank statements, credit reports.', get: 'A lender’s-eye read of your numbers, with the gaps flagged honestly.' },
+  { give: 'Your plans and constraints: security, timing, budget for instalments.', get: 'A recommended structure: product, amount, tenure and security.' },
+  { give: 'The supporting documents on our checklist.', get: 'CMA data, project report where needed, and a complete, consistent file.' },
+  { give: 'Your go-ahead on the shortlisted lenders.', get: 'Applications made, lender queries handled, progress reported to you.' },
+  { give: 'Signatures and compliance documents as lenders ask.', get: 'Term sheets reviewed with you, follow-up to disbursement, renewal support.' },
+];
+---
+<Base title="How We Work | Six Steps from Discovery to Disbursement | FV Funding" description="One advisor, six steps: discovery, financial diagnosis, funding structure, lender-ready file, lender matching and follow-up to disbursement.">
+  <PageHero crumbs={[{ label: 'How we work' }]} eyebrow="How we work" title="One advisor. Six steps." highlight="No guesswork." text="What happens at each step, what we need from you, and what you get back." />
+  <section class="bg-white">
+    <div class="wrap section">
+      <ol style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:16px">
+        {home.process.steps.map((s, i) => (
+          <li class="card" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:20px 32px">
+            <div><p style="font-family:var(--mono);font-size:30px">{i + 1}</p><p class="mt-8" style="font-size:20px;font-weight:600">{s.title}</p><p class="mt-8 muted" style="font-size:15px;line-height:1.6">{s.text}</p></div>
+            <div><p class="mono muted">You give</p><p class="mt-8" style="font-size:16px;line-height:1.6">{detail[i]?.give}</p></div>
+            <div><p class="mono muted">You get</p><p class="mt-8" style="font-size:16px;line-height:1.6">{detail[i]?.get}</p></div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+  <section class="bg-paper border-t">
+    <div class="wrap section grid cols-auto-300">
+      <div class="card"><p class="mono muted">What we do</p><ul class="mt-16" style="padding-left:20px;font-size:16px;line-height:1.9">{home.why.do.map((x) => <li>{x}</li>)}</ul></div>
+      <div class="card"><p class="mono muted">What we don't</p><ul class="mt-16" style="padding-left:20px;font-size:16px;line-height:1.9">{home.why.dont.map((x) => <li>{x}</li>)}</ul></div>
+      <div class="card"><p class="mono muted">Timelines</p><p class="mt-16" style="font-size:16px;line-height:1.7">Every lender and facility moves at its own pace. A complete, consistent file is the single biggest thing that shortens it. We give you a realistic timeline after the diagnosis, not before.</p></div>
+    </div>
+  </section>
+  <CtaBand title="Start with step one." text="A free 30-minute discovery call." />
+</Base>

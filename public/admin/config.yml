@@ -1,0 +1,263 @@
+# FV Funding admin panel (Sveltia CMS, Decap-compatible).
+# 1) Repository: github.com/financevinance/fv-funding-website (private).
+# 2) See WEBSITE-GUIDE.md in the project root for the one-time login setup.
+backend:
+  name: github
+  repo: financevinance/fv-funding-website
+  branch: main
+  commit_messages:
+    create: "Add {{collection}}: {{slug}}"
+    update: "Update {{collection}}: {{slug}}"
+    delete: "Delete {{collection}}: {{slug}}"
+    uploadMedia: "Upload {{path}}"
+    deleteMedia: "Delete {{path}}"
+
+site_url: https://financevinance.com
+display_url: https://financevinance.com
+logo_url: /icon-192.png
+media_folder: public/uploads
+public_folder: /uploads
+
+collections:
+  # ------------------------------------------------------------------ BLOG
+  - name: insights
+    label: Insights (blog articles)
+    label_singular: Article
+    description: Articles appear on /insights/ and the newest three show on the homepage.
+    folder: src/content/insights
+    create: true
+    delete: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    sortable_fields: [date, title]
+    summary: "{{title}} — {{date}}"
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: date, label: Publish date, widget: datetime, time_format: false, date_format: "YYYY-MM-DD", format: "YYYY-MM-DD" }
+      - { name: category, label: Category, widget: select, options: [Lending, Working capital, Term loans, Project finance, Schemes, Business, Insights], default: Insights }
+      - { name: summary, label: Summary (shown on cards and in Google), widget: text }
+      - { name: cover, label: Cover image (optional), widget: image, required: false }
+      - { name: coverAlt, label: Cover image description, widget: string, required: false }
+      - name: relatedService
+        label: Related service (optional)
+        widget: select
+        required: false
+        options:
+          - working-capital-loans
+          - term-loans
+          - capex-loans
+          - machinery-equipment-finance
+          - project-finance
+          - business-expansion-finance
+          - secured-business-loans
+          - unsecured-business-loans
+          - government-schemes-subsidies
+      - { name: draft, label: Draft (hide from the website), widget: boolean, default: false }
+      - { name: body, label: Article, widget: markdown }
+
+  # ------------------------------------------------------------------ SETTINGS & PAGES
+  - name: settings
+    label: Site settings & homepage
+    files:
+      - name: settings
+        label: Contact details, hours, booking & legal
+        file: src/data/settings.json
+        fields:
+          - { name: brandName, label: Brand name, widget: string }
+          - { name: parentName, label: Parent company, widget: string }
+          - { name: tagline, label: Tagline, widget: string }
+          - { name: descriptor, label: Descriptor, widget: string }
+          - { name: siteDescription, label: Default description for Google, widget: text }
+          - { name: email, label: Contact email, widget: string }
+          - { name: phone, label: Phone (leave empty to hide), widget: string, required: false, hint: "Format: +91 98765 43210" }
+          - { name: whatsapp, label: WhatsApp number (leave empty to hide), widget: string, required: false, hint: "Digits with country code, e.g. 919876543210" }
+          - { name: city, label: City, widget: string }
+          - { name: state, label: State, widget: string }
+          - { name: country, label: Country, widget: string }
+          - { name: areaServed, label: Areas served, widget: list, field: { name: area, label: Area, widget: string } }
+          - { name: hoursText, label: Hours (as shown on the site), widget: string }
+          - name: legal
+            label: Legal entity details (shown in footer when filled)
+            widget: object
+            fields:
+              - { name: entityName, label: Legal entity name, widget: string }
+              - { name: entityType, label: Entity type (e.g. LLP, Private Limited, Proprietorship), widget: string, required: false }
+              - { name: registeredAddress, label: Registered address, widget: string, required: false }
+              - { name: gstin, label: GSTIN, widget: string, required: false }
+              - { name: udyam, label: Udyam number, widget: string, required: false }
+              - { name: cin, label: CIN / LLPIN, widget: string, required: false }
+          - name: announcement
+            label: Announcement bar (top of every page)
+            widget: object
+            fields:
+              - { name: enabled, label: Show announcement, widget: boolean, default: false }
+              - { name: text, label: Text, widget: string, required: false }
+              - { name: linkText, label: Link text, widget: string, required: false }
+              - { name: linkUrl, label: Link address, widget: string, required: false }
+          - name: social
+            label: Social links (leave empty to hide)
+            widget: object
+            fields:
+              - { name: linkedin, label: LinkedIn URL, widget: string, required: false }
+              - { name: instagram, label: Instagram URL, widget: string, required: false }
+              - { name: youtube, label: YouTube URL, widget: string, required: false }
+          - name: booking
+            label: Booking availability
+            widget: object
+            fields:
+              - { name: openHour, label: First hour (24h), widget: number, value_type: int, min: 0, max: 23 }
+              - { name: closeHour, label: Closing hour (24h), widget: number, value_type: int, min: 1, max: 24 }
+              - { name: slotMinutes, label: Slot length (minutes), widget: number, value_type: int, min: 15, max: 120 }
+              - { name: daysAhead, label: Days bookable ahead, widget: number, value_type: int, min: 1, max: 90 }
+              - { name: minNoticeHours, label: Minimum notice (hours), widget: number, value_type: int, min: 0, max: 72 }
+              - name: openDays
+                label: Open days
+                widget: select
+                multiple: true
+                options:
+                  - { label: Sunday, value: 0 }
+                  - { label: Monday, value: 1 }
+                  - { label: Tuesday, value: 2 }
+                  - { label: Wednesday, value: 3 }
+                  - { label: Thursday, value: 4 }
+                  - { label: Friday, value: 5 }
+                  - { label: Saturday, value: 6 }
+              - { name: blockedDates, label: Holidays / blocked dates (YYYY-MM-DD), widget: list, required: false, field: { name: date, label: Date, widget: string } }
+              - { name: modes, label: Meeting options, widget: list, field: { name: mode, label: Option, widget: string } }
+              - { name: confirmationNote, label: Note after booking, widget: text }
+
+      - name: home
+        label: Homepage text
+        file: src/data/home.json
+        fields:
+          - { name: seoTitle, label: Google title, widget: string }
+          - { name: seoDescription, label: Google description, widget: text }
+          - name: hero
+            label: Hero
+            widget: object
+            fields:
+              - { name: eyebrow, label: Small label, widget: string }
+              - { name: titleLine1, label: Headline line 1, widget: string }
+              - { name: titleLine2, label: Headline line 2 (gradient), widget: string }
+              - { name: subtitle, label: Subtitle, widget: text }
+              - { name: primaryCta, label: Main button, widget: string }
+              - { name: secondaryCta, label: Second button, widget: string }
+              - { name: serviceLine, label: Service line, widget: string }
+          - name: problem
+            label: Section 01 · Why files get declined
+            widget: object
+            fields:
+              - { name: eyebrow, label: Label, widget: string }
+              - { name: title, label: Title, widget: string }
+              - { name: items, label: Points, widget: list, fields: [{ name: title, label: Title, widget: string }, { name: text, label: Text, widget: text }] }
+              - { name: closing, label: Closing line, widget: string }
+          - name: services
+            label: Section 02 · Services
+            widget: object
+            fields:
+              - { name: eyebrow, label: Label, widget: string }
+              - { name: title, label: Title, widget: string }
+              - { name: schemeNote, label: Scheme note, widget: text }
+          - name: process
+            label: Section 03 · How we work
+            widget: object
+            fields:
+              - { name: eyebrow, label: Label, widget: string }
+              - { name: title, label: Title, widget: string }
+              - { name: steps, label: Steps, widget: list, fields: [{ name: title, label: Title, widget: string }, { name: text, label: Text, widget: text }] }
+          - name: check
+            label: Start here band
+            widget: object
+            fields:
+              - { name: eyebrow, label: Label, widget: string }
+              - { name: title, label: Title, widget: string }
+              - { name: text, label: Text, widget: text }
+              - { name: options, label: Options, widget: list, fields: [{ name: label, label: Label, widget: string }, { name: need, label: Code (operations / machinery / capex / project / expansion / refinance), widget: string }] }
+          - name: why
+            label: Section 04 · Why FV Funding
+            widget: object
+            fields:
+              - { name: eyebrow, label: Label, widget: string }
+              - { name: title, label: Title, widget: string }
+              - { name: pillars, label: Pillars, widget: list, fields: [{ name: title, label: Title, widget: string }, { name: text, label: Text, widget: text }] }
+              - { name: do, label: What we do, widget: list, field: { name: item, label: Item, widget: string } }
+              - { name: dont, label: What we don't, widget: list, field: { name: item, label: Item, widget: string } }
+          - name: who
+            label: Section 05 · Who we work with
+            widget: object
+            fields:
+              - { name: eyebrow, label: Label, widget: string }
+              - { name: title, label: Title, widget: string }
+              - { name: segments, label: Segments, widget: list, field: { name: segment, label: Segment, widget: string } }
+          - name: bring
+            label: Section 06 · Bring to the first meeting
+            widget: object
+            fields:
+              - { name: eyebrow, label: Label, widget: string }
+              - { name: title, label: Title, widget: string }
+              - { name: text, label: Text, widget: text }
+              - { name: items, label: Items, widget: list, field: { name: item, label: Item, widget: string } }
+          - name: insights
+            label: Section 07 · Insights
+            widget: object
+            fields:
+              - { name: eyebrow, label: Label, widget: string }
+              - { name: title, label: Title, widget: string }
+          - name: closing
+            label: Closing band
+            widget: object
+            fields:
+              - { name: title, label: Title, widget: string }
+              - { name: titleHighlight, label: Title (gradient part), widget: string }
+              - { name: text, label: Text, widget: string }
+
+      - name: faqs
+        label: FAQs
+        file: src/data/faqs.json
+        fields:
+          - name: items
+            label: Questions
+            widget: list
+            summary: "{{fields.question}}"
+            fields:
+              - { name: group, label: Group, widget: select, options: [About us, Process, Lenders, Schemes, Privacy] }
+              - { name: home, label: Show on homepage, widget: boolean, default: false }
+              - { name: question, label: Question, widget: string }
+              - { name: answer, label: Answer, widget: text }
+
+  # ------------------------------------------------------------------ SERVICES
+  - name: services
+    label: Services
+    label_singular: Service
+    description: Each service has its own page at /services/<file-name>/. The file name is set when you create it.
+    folder: src/content/services
+    create: true
+    delete: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    summary: "{{order}}. {{title}}"
+    sortable_fields: [order, title]
+    fields:
+      - { name: title, label: Name, widget: string }
+      - { name: order, label: Order (1 = first), widget: number, value_type: int }
+      - { name: group, label: Group, widget: select, options: [{ label: Run the business, value: run }, { label: Grow it, value: grow }, { label: Build it, value: build }, { label: Lower the cost, value: reduce }] }
+      - { name: hidden, label: Hide this service, widget: boolean, default: false, required: false }
+      - { name: code, label: Short label (e.g. CC / OD · Bill discounting), widget: string, required: false }
+      - { name: summary, label: One-line summary, widget: string }
+      - { name: heroTitle, label: Page headline, widget: string }
+      - { name: heroHighlight, label: Page headline (gradient part), widget: string, required: false }
+      - { name: heroText, label: Intro paragraph, widget: text }
+      - { name: seoTitle, label: Google title, widget: string, required: false }
+      - { name: seoDescription, label: Google description, widget: text, required: false }
+      - { name: forms, label: What it covers, widget: list, required: false, fields: [{ name: label, label: Code, widget: string }, { name: name, label: Name, widget: string }, { name: text, label: Text, widget: text }] }
+      - { name: suits, label: Who it suits, widget: list, required: false, field: { name: item, label: Item, widget: string } }
+      - { name: assess, label: How lenders look at it, widget: list, required: false, fields: [{ name: title, label: Title, widget: string }, { name: text, label: Text, widget: text }] }
+      - { name: help, label: How we help (steps), widget: list, required: false, fields: [{ name: title, label: Title, widget: string }, { name: text, label: Text, widget: text }] }
+      - { name: mistakes, label: Mistakes we see often, widget: list, required: false, field: { name: item, label: Item, widget: string } }
+      - { name: documents, label: Documents needed, widget: list, required: false, field: { name: item, label: Document, widget: string } }
+      - { name: note, label: Note under the steps (optional), widget: text, required: false }
+      - { name: faqs, label: FAQs, widget: list, required: false, fields: [{ name: question, label: Question, widget: string }, { name: answer, label: Answer, widget: text }] }
+      - { name: related, label: Related services (file names), widget: list, required: false, field: { name: slug, label: Service file name, widget: string } }
+      - { name: body, label: Extra text (optional), widget: markdown, required: false }

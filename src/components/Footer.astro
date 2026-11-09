@@ -1,0 +1,55 @@
+---
+import settings from '../data/settings.json';
+import { getCollection } from 'astro:content';
+const services = (await getCollection('services', (s) => !s.data.hidden)).sort((a, b) => a.data.order - b.data.order);
+const year = new Date().getFullYear();
+const L = settings.legal;
+const legalBits = [L.entityType && `${L.entityName} (${L.entityType})`, L.registeredAddress, L.gstin && `GSTIN ${L.gstin}`, L.udyam && `Udyam ${L.udyam}`, L.cin && `CIN ${L.cin}`].filter(Boolean);
+const s = settings.social;
+---
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div>
+      <img src="/brand/logo-dark-bg.svg" alt={`${settings.brandName} by ${settings.parentName}`} width="148" height="64" style="height:64px;width:auto;margin-left:-6px" loading="lazy" />
+      <p class="mt-16 small" style="line-height:1.6">Business funding advisory of {settings.parentName}.</p>
+      {(s.linkedin || s.instagram || s.youtube) && (
+        <p class="mt-16 small" style="display:flex;gap:14px">
+          {s.linkedin && <a href={s.linkedin} rel="noopener" target="_blank">LinkedIn</a>}
+          {s.instagram && <a href={s.instagram} rel="noopener" target="_blank">Instagram</a>}
+          {s.youtube && <a href={s.youtube} rel="noopener" target="_blank">YouTube</a>}
+        </p>
+      )}
+    </div>
+    <nav aria-label="Services">
+      <h2>Services</h2>
+      <ul>{services.map((x) => <li><a href={`/services/${x.id}/`}>{x.data.title}</a></li>)}</ul>
+    </nav>
+    <nav aria-label="Company">
+      <h2>Company</h2>
+      <ul>
+        <li><a href="/how-we-work/">How we work</a></li>
+        <li><a href="/who-we-work-with/">Who we work with</a></li>
+        <li><a href="/funding-check/">Funding Readiness Check</a></li>
+        <li><a href="/documents/">Document checklists</a></li>
+        <li><a href="/insights/">Insights</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/faqs/">FAQs</a></li>
+      </ul>
+    </nav>
+    <div>
+      <h2>Contact</h2>
+      <ul>
+        <li><a href={`mailto:${settings.email}`} style="color:var(--offwhite)">{settings.email}</a></li>
+        {settings.phone && <li><a href={`tel:${settings.phone.replace(/\s/g, '')}`} style="color:var(--offwhite)">{settings.phone}</a></li>}
+        {settings.whatsapp && <li><a href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}`} rel="noopener" target="_blank">WhatsApp</a></li>}
+        <li>{settings.city}, {settings.state}, {settings.country}</li>
+        <li>{settings.hoursText}</li>
+        <li><a href="/book/" style="color:var(--offwhite);text-decoration:underline">Book a funding review</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap footer-base">
+    <p style="max-width:720px">{settings.brandName} is a business funding advisor, not a lender. Lenders decide every sanction, and no outcome is guaranteed.{legalBits.length > 0 && <><br />{legalBits.join(' · ')}</>}</p>
+    <p><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/disclaimer/">Disclaimer</a> · <a href="/grievance/">Grievance</a> · © {year} {L.entityName || settings.parentName}</p>
+  </div>
+</footer>

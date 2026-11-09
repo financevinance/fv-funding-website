@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { getCollection, render } from 'astro:content';
+import settings from '../../data/settings.json';
+export async function getStaticPaths() {
+  const posts = await getCollection('insights', (p) => !p.data.draft);
+  const services = await getCollection('services');
+  return posts.map((p) => ({ params: { slug: p.id }, props: { post: p, service: services.find((s) => s.id === p.data.relatedService) } }));
+}
+const { post, service } = Astro.props;
+const { Content } = await render(post);
+const d = post.data;
+const fmt = (x: Date) => x.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+const article = { '@context': 'https://schema.org', '@type': 'Article', headline: d.title, description: d.summary, datePublished: d.date.toISOString(), author: { '@type': 'Organization', name: settings.brandName }, publisher: { '@id': new URL('/#organization', Astro.site).href }, mainEntityOfPage: new URL(`/insights/${post.id}/`, Astro.site).href, ...(d.cover ? { image: new URL(d.cover, Astro.site).href } : {}) };
+---
+<Base title={`${d.title} | FV Funding Insights`} description={d.summary} schema={article} type="article" image={d.cover || '/og-image.png'}>
+  <PageHero crumbs={[{ href: '/insights/', label: 'Insights' }, { label: d.title }]} eyebrow={`${d.category} · ${fmt(d.date)}`} title={d.title} text={d.summary} />
+  <article class="bg-white">
+    <div class="wrap narrow section prose">
+      {d.cover && <img src={d.cover} alt={d.coverAlt || ''} style="width:100%;border-radius:12px;margin-bottom:32px" />}
+      <Content />
+      {service && (
+        <div class="card card-paper" style="margin-top:48px">
+          <p class="mono muted">Related service</p>
+          <p class="title" style="margin-top:8px">{service.data.title}</p>
+          <p class="text">{service.data.summary}</p>
+          <p class="more"><a href={`/services/${service.id}/`}>View service →</a></p>
+        </div>
+      )}
+    </div>
+  </article>
+  <CtaBand title="Want this applied to your numbers?" />
+</Base>

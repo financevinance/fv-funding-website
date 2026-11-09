@@ -1,0 +1,40 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { getCollection } from 'astro:content';
+const services = (await getCollection('services', (s) => !s.data.hidden)).sort((a, b) => a.data.order - b.data.order);
+const groups = [
+  { id: 'run', title: 'Run the business', text: 'Day-to-day cash for stock, receivables and operations.' },
+  { id: 'grow', title: 'Grow it', text: 'Longer-term funding for growth, refinancing and new markets.' },
+  { id: 'build', title: 'Build it', text: 'Land, buildings, machinery and new projects.' },
+  { id: 'reduce', title: 'Lower the cost', text: 'Government schemes, subsidies and credit guarantees.' },
+];
+---
+<Base title="Business Funding Services | FV Funding" description="Working capital, term loans, CAPEX, machinery, project and expansion finance, secured and unsecured business loans, and government scheme advisory.">
+  <PageHero crumbs={[{ label: 'Services' }]} eyebrow="What we help you raise" title="Nine ways to fund" highlight="a growing business." text="Find the facility that fits what you need the money for. Not sure? Book a free review and we'll work it out together.">
+    <div class="btn-row mt-32"><a class="btn btn-grad btn-lg" href="/book/">Book a free funding review</a><a class="btn btn-ghost-dark btn-lg" href="/funding-check/">Take the Readiness Check</a></div>
+  </PageHero>
+  {groups.map((g, gi) => {
+    const items = services.filter((s) => s.data.group === g.id);
+    return items.length > 0 && (
+      <section class={gi % 2 ? 'bg-white border-y' : 'bg-paper'}>
+        <div class="wrap section" style="padding-top:clamp(48px,6vw,80px);padding-bottom:clamp(48px,6vw,80px)">
+          <p class="eyebrow">{String(gi + 1).padStart(2, '0')} — {g.title}</p>
+          <h2 class="h2" style="font-size:clamp(24px,3vw,34px)">{g.text}</h2>
+          <div class="grid cols-auto-300 mt-32">
+            {items.map((s) => (
+              <a class="card card-link" href={`/services/${s.id}/`}>
+                {s.data.code && <p class="num">{s.data.code}</p>}
+                <p class="title">{s.data.title}</p>
+                <p class="text">{s.data.summary}</p>
+                <p class="more">View service →</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  })}
+  <CtaBand />
+</Base>

@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { getCollection } from 'astro:content';
+const services = (await getCollection('services', (s) => !s.data.hidden)).map((s) => ({ id: s.id, title: s.data.title, summary: s.data.summary, docs: s.data.documents }));
+---
+<Base title="Funding Readiness Check | Which Business Loan Fits? | FV Funding" description="Eight quick questions to see which business funding options are likely to fit, what lenders will look at, and which documents to prepare.">
+  <PageHero crumbs={[{ label: 'Funding Readiness Check' }]} eyebrow="Funding Readiness Check" title="Which funding fits" highlight="your business?" text="Eight quick questions. You'll see the facilities that usually fit, what lenders will look at, and what to prepare. Nothing is stored or sent." />
+  <section class="bg-paper">
+    <div class="wrap narrow" style="padding-top:40px;padding-bottom:80px">
+      <div class="panel" data-check>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+          <p class="mono muted" data-q-count>Question 1 of 8</p>
+          <button type="button" class="linkish" data-q-back hidden>← Back</button>
+        </div>
+        <div style="height:6px;border-radius:999px;background:var(--line);overflow:hidden;margin-top:12px"><div data-q-bar style="height:100%;width:12.5%;background:var(--grad-btn);transition:width .4s"></div></div>
+        <div data-q-area class="mt-24" aria-live="polite"></div>
+      </div>
+      <p class="tiny muted mt-24">This is a starting point, not an eligibility decision. Lenders decide on the full facts of each case.</p>
+    </div>
+  </section>
+  <script type="application/json" id="check-data" set:html={JSON.stringify({ services })} />
+  <script>import '../scripts/check.ts';</script>
+</Base>

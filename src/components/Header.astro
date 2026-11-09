@@ -1,0 +1,120 @@
+---
+import settings from '../data/settings.json';
+import { getCollection } from 'astro:content';
+const services = (await getCollection('services', (s) => !s.data.hidden)).sort((a, b) => a.data.order - b.data.order);
+const tickerItems = [...services, services[0]];
+const a = settings.announcement;
+const menu = [
+  { href: '/services/', label: 'Services' },
+  { href: '/how-we-work/', label: 'How we work' },
+  { href: '/who-we-work-with/', label: 'Who we work with' },
+  { href: '/funding-check/', label: 'Funding Readiness Check' },
+  { href: '/insights/', label: 'Insights' },
+  { href: '/about/', label: 'About' },
+  { href: '/faqs/', label: 'FAQs' },
+  { href: '/contact/', label: 'Contact' },
+];
+---
+<div class="topbar" aria-hidden="true"></div>
+{a.enabled && a.text && (
+  <div class="announce" role="note">{a.text} {a.linkUrl && <a href={a.linkUrl}>{a.linkText || 'Learn more'} →</a>}</div>
+)}
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="logo" href="/" aria-label={`${settings.brandName} home`}>
+      <img src="/brand/logo-dark-bg.svg" alt={`${settings.brandName} by ${settings.parentName}`} width="148" height="64" />
+    </a>
+    <div class="ticker" data-ticker>
+      <div class="ticker-window">
+        <ul class="ticker-list" data-ticker-list>
+          {tickerItems.map((s, i) => (
+            <li><a href={`/services/${s.id}/`} tabindex={i === 0 ? undefined : '-1'} aria-hidden={i === 0 ? undefined : 'true'}>{s.data.title} →</a></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span class="live-pill" data-live-pill><span class="live-dot"></span><span data-live-text>{settings.hoursText.toUpperCase()}</span></span>
+      <a class="btn btn-grad btn-sm header-book" href="/book/">Book a funding review</a>
+      <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-menu" data-menu-open><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="menu-overlay" id="site-menu" role="dialog" aria-modal="true" aria-label="Menu" data-menu>
+  <div class="topbar" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="bar">
+      <a class="logo" href="/"><img src="/brand/logo-dark-bg.svg" alt={`${settings.brandName} by ${settings.parentName}`} width="148" height="64" /></a>
+      <button class="menu-close" type="button" aria-label="Close menu" data-menu-close>×</button>
+    </div>
+    <nav class="menu-nav" aria-label="Main">
+      {menu.map((m, i) => (
+        <a class="menu-link" href={m.href} style={`animation-delay:${0.04 * (i + 1)}s`}><span class="n">{String(i + 1).padStart(2, '0')}</span>{m.label}</a>
+      ))}
+    </nav>
+    <p class="eyebrow mt-40">Services</p>
+    <div class="menu-sub">
+      {services.map((s) => <a href={`/services/${s.id}/`}>{s.data.title}</a>)}
+    </div>
+    <div class="mt-40" style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;padding-bottom:48px">
+      <a class="btn btn-grad btn-lg" href="/book/">Book a free 30-minute funding review</a>
+      <span class="mono" style="color:var(--grey-dark-bg)">{settings.email} · {settings.hoursText}</span>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ openHour: settings.booking.openHour, closeHour: settings.booking.closeHour }}>
+  (function () {
+    // Live open/closed status in India time
+    var pill = document.querySelector('[data-live-pill]');
+    var txt = document.querySelector('[data-live-text]');
+    function fmt(h) { var s = h >= 12 ? 'PM' : 'AM'; var x = h % 12 || 12; return x + ' ' + s; }
+    function updateLive() {
+      if (!pill) return;
+      var now = new Date();
+      var ist = new Date(now.getTime() + (330 + now.getTimezoneOffset()) * 60000);
+      var m = ist.getHours() * 60 + ist.getMinutes();
+      var open = m >= openHour * 60 && m < closeHour * 60;
+      pill.classList.toggle('is-open', open);
+      txt.textContent = open ? 'OPEN NOW · TILL ' + fmt(closeHour) + ' IST' : 'OPENS ' + fmt(openHour) + ' IST';
+    }
+    updateLive(); setInterval(updateLive, 60000);
+
+    // Service ticker
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var list = document.querySelector('[data-ticker-list]');
+    var box = document.querySelector('[data-ticker]');
+    if (list && !reduce) {
+      var items = list.querySelectorAll('a');
+      var n = items.length - 1, i = 0, paused = false;
+      box.addEventListener('mouseenter', function () { paused = true; });
+      box.addEventListener('mouseleave', function () { paused = false; });
+      box.addEventListener('focusin', function () { paused = true; });
+      box.addEventListener('focusout', function () { paused = false; });
+      function setActive(k) {
+        items.forEach(function (a, j) { var on = (j === k); a.tabIndex = on ? 0 : -1; if (on) a.removeAttribute('aria-hidden'); else a.setAttribute('aria-hidden', 'true'); });
+      }
+      setInterval(function () {
+        if (paused || document.hidden) return;
+        i += 1;
+        list.style.transition = '';
+        list.style.transform = 'translateY(' + (-26 * i) + 'px)';
+        if (i === n) {
+          setTimeout(function () { list.style.transition = 'none'; list.style.transform = 'translateY(0)'; i = 0; setActive(0); }, 650);
+        } else { setActive(i); }
+      }, 2400);
+    }
+
+    // Menu overlay
+    var menu = document.querySelector('[data-menu]');
+    var openBtn = document.querySelector('[data-menu-open]');
+    var closeBtn = document.querySelector('[data-menu-close]');
+    function openMenu() { menu.classList.add('open'); openBtn.setAttribute('aria-expanded', 'true'); document.body.style.overflow = 'hidden'; closeBtn.focus(); }
+    function closeMenu() { menu.classList.remove('open'); openBtn.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; openBtn.focus(); }
+    openBtn && openBtn.addEventListener('click', openMenu);
+    closeBtn && closeBtn.addEventListener('click', closeMenu);
+    menu && menu.addEventListener('click', function (e) { if (e.target.closest('a')) { menu.classList.remove('open'); document.body.style.overflow = ''; } });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && menu.classList.contains('open')) closeMenu(); });
+  })();
+</script>

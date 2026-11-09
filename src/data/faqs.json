@@ -1,0 +1,16 @@
+{
+  "items": [
+    { "group": "About us", "home": true, "question": "Are you a lender?", "answer": "No. FV Funding is a business funding advisor. We prepare your file and approach banks and NBFCs; the lender alone decides whether to sanction." },
+    { "group": "About us", "home": true, "question": "Do you guarantee approval?", "answer": "No one honestly can. What we do is remove the avoidable reasons a file gets declined: the wrong lender, the wrong product, or numbers presented poorly." },
+    { "group": "About us", "home": true, "question": "Do you handle home, car or personal loans?", "answer": "No. We work only on facilities that run and grow businesses." },
+    { "group": "About us", "home": false, "question": "Which businesses do you work with?", "answer": "Manufacturers and processors, traders and distributors, service businesses and professional firms, exporters and importers, and growing companies or funded startups that already have revenue." },
+    { "group": "Process", "home": true, "question": "What happens in the free 30-minute review?", "answer": "We understand your requirement, timeline and existing borrowings, and tell you which type of facility is likely to fit and what we would need to prepare it." },
+    { "group": "Process", "home": true, "question": "Do I need all my documents before booking?", "answer": "No. Book first. The checklist on this site shows what helps; we will tell you what else is needed after the first call." },
+    { "group": "Process", "home": false, "question": "How long does funding take?", "answer": "It depends on the facility, the lender and how complete the file is. A well-prepared file moves faster at every lender; we give you a realistic timeline after the diagnosis." },
+    { "group": "Process", "home": false, "question": "Can you help with renewal of an existing limit?", "answer": "Yes. We prepare renewal and enhancement files so an existing limit is kept or increased rather than cut." },
+    { "group": "Lenders", "home": false, "question": "Which banks and NBFCs do you work with?", "answer": "We approach banks and NBFCs whose lending criteria fit your case. We tell you which lender before any application is made." },
+    { "group": "Lenders", "home": false, "question": "Will approaching many lenders hurt my credit score?", "answer": "Each formal application can lead to a credit enquiry. That is why we shortlist lenders before applying instead of sending the file everywhere." },
+    { "group": "Schemes", "home": true, "question": "Can you help with government schemes and subsidies?", "answer": "Yes: capital and interest subsidies, CGTMSE, and central and Gujarat incentives. We check eligibility and handle the filing. The government agency decides and pays, usually after disbursement." },
+    { "group": "Privacy", "home": false, "question": "What do you do with my documents?", "answer": "We use them only to assess and prepare your funding file, share them only with lenders you have agreed to, and never collect financial documents through this website." }
+  ]
+}

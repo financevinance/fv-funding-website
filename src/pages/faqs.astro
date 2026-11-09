@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+import faqs from '../data/faqs.json';
+const groups = [...new Set(faqs.items.map((f) => f.group))];
+---
+<Base title="FAQs | Business Funding Advisory | FV Funding" description="Answers about FV Funding, our process, lenders, government schemes and how we handle your data.">
+  <PageHero crumbs={[{ label: 'FAQs' }]} eyebrow="Questions" title="Frequently" highlight="asked." />
+  <section class="bg-white">
+    <div class="wrap narrow section">
+      {groups.map((g, i) => (
+        <div class={i ? 'mt-48' : ''}>
+          <h2 class="eyebrow" style="font-weight:500">{g}</h2>
+          <Faq items={faqs.items.filter((f) => f.group === g)} schema={false} />
+        </div>
+      ))}
+    </div>
+  </section>
+  <script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.items.map((f) => ({ '@type': 'Question', name: f.question, acceptedAnswer: { '@type': 'Answer', text: f.answer } })) })} />
+  <CtaBand title="Still have a question?" text="Ask it on a free 30-minute call." />
+</Base>

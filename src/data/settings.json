@@ -1,0 +1,45 @@
+{
+  "brandName": "FV Funding",
+  "parentName": "Finance Vinance",
+  "tagline": "The right funding. Structured right.",
+  "descriptor": "Business funding advisory",
+  "siteDescription": "CA-led business funding advisory for MSMEs, manufacturers, traders and growing companies. Working capital, term loans, CAPEX, project and machinery finance, and government scheme advisory.",
+  "email": "funding@financevinance.com",
+  "phone": "",
+  "whatsapp": "",
+  "city": "Ahmedabad",
+  "state": "Gujarat",
+  "country": "India",
+  "areaServed": ["Gujarat", "India"],
+  "hoursText": "10 am – 7 pm IST, every day",
+  "legal": {
+    "entityName": "Finance Vinance",
+    "entityType": "",
+    "registeredAddress": "",
+    "gstin": "",
+    "udyam": "",
+    "cin": ""
+  },
+  "announcement": {
+    "enabled": false,
+    "text": "",
+    "linkText": "",
+    "linkUrl": ""
+  },
+  "social": {
+    "linkedin": "",
+    "instagram": "",
+    "youtube": ""
+  },
+  "booking": {
+    "openHour": 10,
+    "closeHour": 19,
+    "slotMinutes": 30,
+    "daysAhead": 21,
+    "minNoticeHours": 3,
+    "openDays": [0, 1, 2, 3, 4, 5, 6],
+    "blockedDates": [],
+    "modes": ["Video call", "Phone call"],
+    "confirmationNote": "We will confirm your slot by email. If the time no longer works, we will offer the nearest free slot."
+  }
+}

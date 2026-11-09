@@ -1,0 +1,172 @@
+---
+import Base from '../layouts/Base.astro';
+import HeroScene from '../components/HeroScene.astro';
+import Faq from '../components/Faq.astro';
+import home from '../data/home.json';
+import faqs from '../data/faqs.json';
+import settings from '../data/settings.json';
+import { getCollection } from 'astro:content';
+
+const services = (await getCollection('services', (s) => !s.data.hidden)).sort((a, b) => a.data.order - b.data.order);
+const insights = (await getCollection('insights', (p) => !p.data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
+const homeFaqs = faqs.items.filter((f) => f.home).slice(0, 6);
+const H = home;
+const fmtDate = (d: Date) => d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+const website = { '@context': 'https://schema.org', '@type': 'WebSite', name: settings.brandName, url: new URL('/', Astro.site).href };
+---
+<Base title={H.seoTitle} description={H.seoDescription} schema={website}>
+  <section class="bg-dark relative hero" aria-labelledby="hero-title">
+    <div class="glow glow-tr" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="copy">
+        <p class="eyebrow">{H.hero.eyebrow}</p>
+        <h1 id="hero-title" class="h1">{H.hero.titleLine1}<br /><span class="grad-text">{H.hero.titleLine2}</span></h1>
+        <p class="lead mt-24">{H.hero.subtitle}</p>
+        <div class="btn-row mt-32">
+          <a class="btn btn-grad btn-lg" href="/book/">{H.hero.primaryCta}</a>
+          <a class="btn btn-ghost-dark btn-lg" href="/funding-check/">{H.hero.secondaryCta}</a>
+        </div>
+        <p class="service-line">{H.hero.serviceLine}</p>
+      </div>
+      <div class="art"><HeroScene /></div>
+    </div>
+  </section>
+
+  <section class="bg-paper" aria-labelledby="problem-title">
+    <div class="wrap section">
+      <p class="eyebrow">01 — {H.problem.eyebrow}</p>
+      <h2 id="problem-title" class="h2">{H.problem.title}</h2>
+      <div class="grid cols-auto-260 mt-48" style="gap:24px">
+        {H.problem.items.map((p) => (
+          <div class="top-rule"><p style="font-size:22px;font-weight:600">{p.title}</p><p class="mt-12 muted" style="font-size:16px;line-height:1.6">{p.text}</p></div>
+        ))}
+      </div>
+      <p class="mt-48" style="font-size:20px;line-height:1.5;font-weight:500;max-width:720px">{H.problem.closing}</p>
+    </div>
+  </section>
+
+  <section id="services" class="bg-white border-y" aria-labelledby="services-title">
+    <div class="wrap section">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px">
+        <div><p class="eyebrow">02 — {H.services.eyebrow}</p><h2 id="services-title" class="h2">{H.services.title}</h2></div>
+        <a href="/services/" style="font-weight:600">All services →</a>
+      </div>
+      <div class="grid cols-auto-300 mt-48">
+        {services.map((s, i) => (
+          <a class="card card-link" href={`/services/${s.id}/`} style={i === 0 ? 'background:var(--paper)' : ''}>
+            <p class="num">{String(i + 1).padStart(2, '0')}</p>
+            <p class="title">{s.data.title}</p>
+            <p class="text">{s.data.summary}</p>
+            <p class="more">View service →</p>
+          </a>
+        ))}
+      </div>
+      <p class="tiny muted mt-24" style="max-width:860px">{H.services.schemeNote}</p>
+    </div>
+  </section>
+
+  <section id="how" class="bg-paper" aria-labelledby="how-title">
+    <div class="wrap section">
+      <p class="eyebrow">03 — {H.process.eyebrow}</p>
+      <h2 id="how-title" class="h2">{H.process.title}</h2>
+      <ol class="grid cols-auto-170 mt-48" style="list-style:none;padding:0">
+        {H.process.steps.map((s, i) => (
+          <li class="card"><p style="font-family:var(--mono);font-size:28px;font-weight:500">{i + 1}</p><p class="mt-12" style="font-size:17px;font-weight:600">{s.title}</p><p class="mt-8 muted" style="font-size:14px;line-height:1.55">{s.text}</p></li>
+        ))}
+      </ol>
+      <p class="mt-32"><a href="/how-we-work/" style="font-weight:600">How we work, in detail →</a></p>
+    </div>
+  </section>
+
+  <section id="check" class="bg-dark" aria-labelledby="check-title">
+    <div class="wrap" style="padding-top:clamp(56px,7vw,88px);padding-bottom:clamp(56px,7vw,88px);display:flex;flex-wrap:wrap;gap:40px;align-items:center;justify-content:space-between">
+      <div style="flex:1 1 420px;min-width:0">
+        <p class="eyebrow">{H.check.eyebrow}</p>
+        <h2 id="check-title" class="h2" style="font-size:clamp(28px,3.2vw,40px)">{H.check.title}</h2>
+        <p class="mt-12" style="font-size:17px;line-height:1.55;color:var(--soft);max-width:520px">{H.check.text}</p>
+      </div>
+      <div class="grid cols-auto-210" style="flex:1 1 460px;gap:12px">
+        {H.check.options.map((o) => <a class="choice" href={`/funding-check/?need=${o.need}`}>{o.label} <span aria-hidden="true">→</span></a>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white" aria-labelledby="why-title">
+    <div class="wrap section">
+      <p class="eyebrow">04 — {H.why.eyebrow}</p>
+      <h2 id="why-title" class="h2">{H.why.title}</h2>
+      <div class="grid mt-48" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:0 48px">
+        {H.why.pillars.map((p) => (<div class="pillar"><p style="font-size:19px;font-weight:600">{p.title}</p><p class="mt-8 muted" style="font-size:16px;line-height:1.6">{p.text}</p></div>))}
+      </div>
+      <div class="grid cols-auto-300 mt-48">
+        <div class="card card-paper"><p class="mono muted">What we do</p><ul class="mt-16" style="padding-left:20px;font-size:16px;line-height:1.9">{H.why.do.map((x) => <li>{x}</li>)}</ul></div>
+        <div class="card card-paper"><p class="mono muted">What we don't</p><ul class="mt-16" style="padding-left:20px;font-size:16px;line-height:1.9">{H.why.dont.map((x) => <li>{x}</li>)}</ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="who" class="bg-paper" aria-labelledby="who-title">
+    <div class="wrap section">
+      <p class="eyebrow">05 — {H.who.eyebrow}</p>
+      <h2 id="who-title" class="h2">{H.who.title}</h2>
+      <div class="grid cols-auto-210 mt-40" style="gap:12px">
+        {H.who.segments.map((s, i) => (<a class="card card-link" href="/who-we-work-with/"><p class="num">{String(i + 1).padStart(2, '0')}</p><p class="mt-12" style="font-size:17px;font-weight:600;line-height:1.35">{s}</p></a>))}
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white border-t" aria-labelledby="bring-title">
+    <div class="wrap section split">
+      <div class="side">
+        <p class="eyebrow">06 — {H.bring.eyebrow}</p>
+        <h2 id="bring-title" class="h2">{H.bring.title}</h2>
+        <p class="mt-16 muted" style="font-size:17px;line-height:1.6;max-width:460px">{H.bring.text}</p>
+        <p class="mt-24"><a href="/documents/" style="font-weight:600">Checklists for each facility →</a></p>
+      </div>
+      <ul class="rule-list main">{H.bring.items.map((x) => <li><span class="box-tick" aria-hidden="true"></span>{x}</li>)}</ul>
+    </div>
+  </section>
+
+  {insights.length > 0 && (
+    <section class="bg-paper" aria-labelledby="insights-title">
+      <div class="wrap section">
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px">
+          <div><p class="eyebrow">07 — {H.insights.eyebrow}</p><h2 id="insights-title" class="h2">{H.insights.title}</h2></div>
+          <a href="/insights/" style="font-weight:600">All insights →</a>
+        </div>
+        <div class="grid cols-auto-300 mt-40">
+          {insights.map((p) => (
+            <a class="card card-link" href={`/insights/${p.id}/`}>
+              <p class="num">{p.data.category} · {fmtDate(p.data.date)}</p>
+              <h3 class="title">{p.data.title}</h3>
+              <p class="text">{p.data.summary}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="bg-white border-t" aria-labelledby="faq-title">
+    <div class="wrap narrow section">
+      <p class="eyebrow">08 — Questions</p>
+      <h2 id="faq-title" class="h2">Before you book.</h2>
+      <div class="mt-32"><Faq items={homeFaqs} /></div>
+      <p class="mt-24"><a href="/faqs/" style="font-weight:600">All FAQs →</a></p>
+    </div>
+  </section>
+
+  <section class="bg-dark relative" aria-labelledby="close-title">
+    <div class="glow glow-bl" aria-hidden="true"></div>
+    <div class="wrap section" style="position:relative">
+      <h2 id="close-title" class="h2" style="font-size:clamp(32px,4.4vw,54px);line-height:1.08">{H.closing.title} <span class="grad-text">{H.closing.titleHighlight}</span></h2>
+      <p class="mt-16" style="font-size:18px;color:var(--soft)">{H.closing.text}</p>
+      <div class="mt-32" style="display:flex;flex-wrap:wrap;gap:10px">
+        {services.slice(0, 5).map((s) => <a class="chip" href={`/book/?service=${s.id}`}>{s.data.title}</a>)}
+        <a class="chip" href="/book/?service=government-schemes-subsidies">Schemes &amp; subsidies</a>
+        <a class="btn btn-grad" style="border-radius:999px" href="/book/">Not sure yet →</a>
+      </div>
+      <p class="mt-24 mono" style="color:var(--grey-dark-bg)">{settings.hoursText} · Video or phone</p>
+    </div>
+  </section>
+</Base>

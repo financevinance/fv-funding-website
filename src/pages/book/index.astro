@@ -1,0 +1,122 @@
+---
+import Base from '../../layouts/Base.astro';
+import settings from '../../data/settings.json';
+import { getCollection } from 'astro:content';
+const services = (await getCollection('services', (s) => !s.data.hidden)).sort((a, b) => a.data.order - b.data.order);
+const svcData = services.map((s) => ({ id: s.id, title: s.data.title, note: s.data.summary, docs: s.data.documents }));
+svcData.push({ id: 'not-sure', title: 'Not sure yet', note: 'We will work it out together on the call.', docs: [] });
+const steps = ['Topic', 'Meeting', 'Date', 'Time', 'Details', 'Confirm'];
+const modeNotes: Record<string, string> = { 'Video call': 'A video link comes with your confirmation', 'Phone call': 'We call you on your mobile', 'In person': `At our ${settings.city} office, by arrangement` };
+---
+<Base title="Book a Free 30-Minute Funding Review | FV Funding" description={`Book a free 30-minute business funding review. ${settings.hoursText}. Video or phone.`} mobileCta={false}>
+  <section class="bg-paper">
+    <div class="wrap narrow" style="padding-top:40px;padding-bottom:80px">
+      <p class="eyebrow">Free 30-minute funding review</p>
+      <h1 class="h2" style="font-size:clamp(30px,4vw,44px)">Book your review</h1>
+      <p class="mt-12 muted" style="font-size:16px">{settings.hoursText} · {settings.booking.modes.join(' or ')} · No obligation</p>
+
+      <ol class="steps" aria-label="Booking steps" data-steps>
+        {steps.map((s, i) => <li data-step-ind={i + 1}><span class="dot">{i + 1}</span><span class="lbl">{s}</span></li>)}
+      </ol>
+
+      <form class="panel mt-24" name="booking" method="POST" action="/book/" data-netlify="true" netlify-honeypot="bot-field" data-booking novalidate>
+        <input type="hidden" name="form-name" value="booking" />
+        <p class="hp"><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
+        <input type="hidden" name="service" />
+        <input type="hidden" name="meeting_mode" />
+        <input type="hidden" name="date" />
+        <input type="hidden" name="time_ist" />
+        <input type="hidden" name="source" />
+
+        <div data-step="1">
+          <h2 style="font-size:24px;font-weight:700" tabindex="-1">What would you like to discuss?</h2>
+          <p class="mt-8 muted">Choose the closest. You can change it later.</p>
+          <div class="opts" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))">
+            {svcData.map((s) => (<button type="button" class="opt-btn" data-pick="service" data-value={s.id} aria-pressed="false"><span class="t">{s.title}</span><span class="d">{s.note}</span></button>))}
+          </div>
+        </div>
+
+        <div data-step="2" hidden>
+          <h2 style="font-size:24px;font-weight:700" tabindex="-1">How should we meet?</h2>
+          <p class="mt-8 muted">Every review takes 30 minutes.</p>
+          <div class="opts" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))">
+            {settings.booking.modes.map((m) => (<button type="button" class="opt-btn" data-pick="mode" data-value={m} aria-pressed="false" style="min-height:84px"><span class="t">{m}</span><span class="d">{modeNotes[m] || ''}</span></button>))}
+          </div>
+        </div>
+
+        <div data-step="3" hidden>
+          <h2 style="font-size:24px;font-weight:700" tabindex="-1">Pick a date</h2>
+          <p class="mt-8 muted">Days that are unavailable are greyed out.</p>
+          <div class="opts" style="grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px" data-dates></div>
+        </div>
+
+        <div data-step="4" hidden>
+          <h2 style="font-size:24px;font-weight:700" tabindex="-1">Pick a time</h2>
+          <p class="mt-8 muted" data-date-label></p>
+          <div class="opts" style="grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:8px" data-times></div>
+        </div>
+
+        <div data-step="5" hidden>
+          <h2 style="font-size:24px;font-weight:700" tabindex="-1">Your details</h2>
+          <p class="mt-8 muted">So we can confirm the booking and prepare for the call.</p>
+          <div class="grid cols-auto-260 mt-24" style="gap:18px">
+            <div class="field"><label for="b-name">Full name</label><input class="input" id="b-name" name="name" autocomplete="name" /><p class="err" data-err="name" hidden></p></div>
+            <div class="field"><label for="b-mobile">Mobile number</label><div style="display:flex;gap:8px"><span class="prefix">+91</span><input class="input" id="b-mobile" name="mobile" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="12" /></div><p class="err" data-err="mobile" hidden></p></div>
+            <div class="field"><label for="b-email">Email</label><input class="input" id="b-email" name="email" type="email" autocomplete="email" /><p class="err" data-err="email" hidden></p></div>
+            <div class="field"><label for="b-company">Business name <span class="opt">(optional)</span></label><input class="input" id="b-company" name="business" autocomplete="organization" /></div>
+            <div class="field"><label for="b-turnover">Annual turnover <span class="opt">(optional)</span></label>
+              <select class="input" id="b-turnover" name="turnover"><option value="">Select</option><option>Under ₹1 crore</option><option>₹1–5 crore</option><option>₹5–25 crore</option><option>₹25–100 crore</option><option>Above ₹100 crore</option><option>Prefer not to say</option></select></div>
+            <div class="field"><label for="b-amount">Funding needed <span class="opt">(optional)</span></label>
+              <select class="input" id="b-amount" name="amount"><option value="">Select</option><option>Under ₹50 lakh</option><option>₹50 lakh – ₹2 crore</option><option>₹2–10 crore</option><option>Above ₹10 crore</option><option>Not sure yet</option></select></div>
+          </div>
+          <div class="field mt-16"><label for="b-msg">Anything we should know? <span class="opt">(optional)</span></label><textarea class="input" id="b-msg" name="message" rows="4" maxlength="500"></textarea><p class="tiny muted" style="text-align:right;margin-top:6px"><span data-count>0</span> / 500</p></div>
+          <div class="mt-16" style="display:flex;flex-direction:column;gap:12px">
+            <label class="check"><input type="checkbox" name="consent" value="yes" /><span>I agree that {settings.brandName} may use these details to arrange and prepare for this consultation, as set out in the <a href="/privacy/" target="_blank">privacy notice</a>. <span style="color:var(--error)">Required</span></span></label>
+            <p class="err" data-err="consent" hidden style="margin-left:32px;margin-top:-4px"></p>
+            <label class="check"><input type="checkbox" name="whatsapp_updates" value="yes" /><span>Also send booking updates on WhatsApp <span class="muted">(optional)</span></span></label>
+          </div>
+        </div>
+
+        <div data-step="6" hidden>
+          <h2 style="font-size:24px;font-weight:700" tabindex="-1">Check and confirm</h2>
+          <dl class="summary">
+            <div><dt>ABOUT</dt><dd data-sum="service"></dd><button type="button" class="linkish" data-goto="1">Edit</button></div>
+            <div><dt>MEETING</dt><dd data-sum="mode"></dd><button type="button" class="linkish" data-goto="2">Edit</button></div>
+            <div><dt>WHEN</dt><dd data-sum="when"></dd><button type="button" class="linkish" data-goto="3">Edit</button></div>
+            <div><dt>YOU</dt><dd data-sum="you"></dd><button type="button" class="linkish" data-goto="5">Edit</button></div>
+          </dl>
+          <p class="tiny muted mt-16">{settings.brandName} is an advisor, not a lender. The review is free and carries no obligation.</p>
+          <p class="err" data-err="submit" hidden role="alert"></p>
+        </div>
+
+        <div class="nav-row" data-nav>
+          <button type="button" class="btn btn-outline" data-back hidden>← Back</button>
+          <span style="flex:1"></span>
+          <p class="err" data-err="step" hidden role="alert" style="margin:0"></p>
+          <button type="button" class="btn btn-dark btn-lg" data-next>Continue</button>
+        </div>
+
+        <div data-done hidden>
+          <div style="display:flex;align-items:center;gap:14px">
+            <span class="done-mark" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0A0B0D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>
+            <h2 style="font-size:clamp(24px,3.4vw,32px);font-weight:700" tabindex="-1" data-done-title>Request received.</h2>
+          </div>
+          <p class="mt-16" style="font-size:17px;line-height:1.6"><strong data-done-when></strong></p>
+          <p class="mt-8 muted" style="line-height:1.6">{settings.booking.confirmationNote}</p>
+          <div class="btn-row mt-24">
+            <a class="btn btn-outline btn-sm" data-gcal target="_blank" rel="noopener">Add to Google Calendar</a>
+            <button type="button" class="btn btn-outline btn-sm" data-ics>Add to Apple / Outlook (.ics)</button>
+          </div>
+          <div class="grid cols-auto-260 mt-32">
+            <div class="card card-paper"><p class="mono muted">Have these handy</p><ul class="mt-12" style="padding-left:18px;line-height:1.8" data-done-docs></ul></div>
+            <div class="card card-paper"><p class="mono muted">What happens next</p><ol class="mt-12" style="padding-left:18px;line-height:1.8"><li>We confirm your slot by email</li><li>A 30-minute call on your requirement</li><li>Our view on the facility that fits, and what we'd need</li></ol></div>
+          </div>
+          <div class="btn-row mt-32"><a class="btn btn-dark" href="/">Back to the website</a><a class="btn btn-outline" href="/insights/">Read our insights</a></div>
+        </div>
+      </form>
+      <p class="tiny muted mt-24">Your details are used only to arrange this consultation. Prefer email? Write to <a href={`mailto:${settings.email}`}>{settings.email}</a>.</p>
+    </div>
+  </section>
+  <script type="application/json" id="booking-data" set:html={JSON.stringify({ services: svcData, booking: settings.booking, brand: settings.brandName, email: settings.email, baseDocs: ["Last 3 years' financial statements and ITRs", "Last 12 months' bank statements", 'GST returns for the last 12 months', 'Sanction letters of existing loans', 'KYC of the business and promoters'] })} />
+  <script>import "../../scripts/booking.ts";</script>
+</Base>

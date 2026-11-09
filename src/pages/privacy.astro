@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import S from '../data/settings.json';
+const entity = S.legal.entityName || S.parentName;
+---
+<Base title="Privacy Notice | FV Funding" description="How FV Funding collects, uses and protects personal data shared through this website.">
+  <PageHero crumbs={[{ label: 'Privacy notice' }]} title="Privacy notice" text="Last updated: 9 November 2026" />
+  <section class="bg-white"><div class="wrap narrow section prose">
+    <p>This notice explains how {entity} ("we"), through its business funding advisory {S.brandName}, handles personal data that you share with us through this website. We follow India's Digital Personal Data Protection Act, 2023 and the rules made under it.</p>
+    <h2>What we collect</h2>
+    <p>Only what you type into our forms: your name, mobile number, email address, business name, and any message, booking choices or optional answers (such as turnover or funding range) you choose to give. We do not collect PAN, Aadhaar, bank account details, passwords or financial documents through this website.</p>
+    <h2>Why we use it</h2>
+    <ul><li>To arrange and prepare for the consultation you booked, or to reply to your message.</li><li>To send booking confirmations and reminders.</li><li>With your separate consent, to send booking updates on WhatsApp.</li></ul>
+    <p>We do not sell your data or use it for unrelated marketing.</p>
+    <h2>Consent</h2>
+    <p>We process your data on the basis of the consent you give when you submit a form. You can withdraw consent at any time by writing to <a href={`mailto:${S.email}`}>{S.email}</a>. Withdrawal does not affect processing already done.</p>
+    <h2>Who we share it with</h2>
+    <p>Service providers who host this website and deliver its forms and emails, only to the extent needed to run them. If you later engage us, we share your information with a lender only with your agreement.</p>
+    <h2>How long we keep it</h2>
+    <p>Only for as long as needed for the purpose you gave it for, or as the law requires, after which it is deleted.</p>
+    <h2>Your rights</h2>
+    <p>You can ask for a summary of the personal data we hold about you, ask us to correct or erase it, and nominate another person to exercise your rights. Write to <a href={`mailto:${S.email}`}>{S.email}</a>. If you are not satisfied with our response, see our <a href="/grievance/">grievance page</a>; you may also approach the Data Protection Board of India.</p>
+    <h2>Cookies and analytics</h2>
+    <p>This website does not use advertising or tracking cookies. If we add privacy-friendly, cookie-free visit statistics, they will not identify you.</p>
+    <h2>Security</h2>
+    <p>The website is served over an encrypted connection, and form submissions are protected against automated abuse. No method is perfectly secure, so please do not send financial documents through the website.</p>
+    <h2>Contact</h2>
+    <p>{entity}, {S.city}, {S.state}, {S.country}. Email: <a href={`mailto:${S.email}`}>{S.email}</a>.</p>
+  </div></section>
+</Base>

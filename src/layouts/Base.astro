@@ -1,0 +1,87 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import settings from '../data/settings.json';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+  schema?: object | object[];
+  mobileCta?: boolean;
+  type?: 'website' | 'article';
+}
+const { title, description = settings.siteDescription, image = '/og-image.png', noindex = false, schema, mobileCta = true, type = 'website' } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL(image, Astro.site).href;
+
+const org = {
+  '@context': 'https://schema.org',
+  '@type': ['Organization', 'FinancialService'],
+  '@id': new URL('/#organization', Astro.site).href,
+  name: settings.brandName,
+  alternateName: `${settings.brandName} by ${settings.parentName}`,
+  url: new URL('/', Astro.site).href,
+  logo: new URL('/icon-512.png', Astro.site).href,
+  image: new URL('/og-image.png', Astro.site).href,
+  description: settings.siteDescription,
+  email: settings.email,
+  ...(settings.phone ? { telephone: settings.phone } : {}),
+  address: { '@type': 'PostalAddress', addressLocality: settings.city, addressRegion: settings.state, addressCountry: 'IN' },
+  areaServed: settings.areaServed,
+  openingHoursSpecification: [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], opens: `${String(settings.booking.openHour).padStart(2,'0')}:00`, closes: `${String(settings.booking.closeHour).padStart(2,'0')}:00` }],
+  parentOrganization: { '@type': 'Organization', name: settings.legal.entityName || settings.parentName },
+};
+const schemas = [org, ...(schema ? (Array.isArray(schema) ? schema : [schema]) : [])];
+---
+<!doctype html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; form-action 'self'; base-uri 'self'; object-src 'none'" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
+  <meta name="theme-color" content="#0A0B0D" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta property="og:type" content={type} />
+  <meta property="og:site_name" content={settings.brandName} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="en_IN" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImage} />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+  {schemas.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+</head>
+<body class={mobileCta ? 'has-mobile-cta' : ''}>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <Header />
+  <main id="main">
+    <slot />
+  </main>
+  <Footer />
+  {mobileCta && (
+    <div class="mobile-cta">
+      <a class="btn btn-grad btn-sm" href="/book/">Book a free funding review</a>
+      {settings.whatsapp && <a class="btn btn-ghost-dark btn-sm" style="flex:0 0 auto" href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}`} aria-label="Chat on WhatsApp">WhatsApp</a>}
+    </div>
+  )}
+</body>
+</html>

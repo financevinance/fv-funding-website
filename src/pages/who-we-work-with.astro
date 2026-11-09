@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+const segs = [
+  { t: 'Manufacturers and processors', needs: 'Stock and receivables funding, machinery, capacity addition, new units.', fac: [['Working Capital', 'working-capital-loans'], ['Machinery & Equipment Finance', 'machinery-equipment-finance'], ['CAPEX Loans', 'capex-loans'], ['Project Finance', 'project-finance']], watch: 'Stock statements and drawing power that don’t match the limit asked for.' },
+  { t: 'Traders, distributors and stockists', needs: 'Inventory and credit to buyers, seasonal stocking, warehousing.', fac: [['Working Capital', 'working-capital-loans'], ['Unsecured Business Loans', 'unsecured-business-loans'], ['Secured Business Loans', 'secured-business-loans']], watch: 'Thin margins that make coverage tight; GST and bank credits that don’t reconcile.' },
+  { t: 'Service businesses and professional firms', needs: 'Growth capital, office set-up, equipment, smoothing uneven receivables.', fac: [['Term Loans', 'term-loans'], ['Unsecured Business Loans', 'unsecured-business-loans'], ['Business Expansion Finance', 'business-expansion-finance']], watch: 'Few hard assets to offer as security; lenders lean heavily on banking and profit history.' },
+  { t: 'Exporters and importers', needs: 'Funding the gap between paying suppliers and getting paid by overseas buyers.', fac: [['Working Capital', 'working-capital-loans'], ['Term Loans', 'term-loans']], watch: 'Long receivable cycles and currency exposure that need to be shown clearly in projections.' },
+  { t: 'Growing companies and funded startups with revenue', needs: 'Working capital and growth debt alongside equity.', fac: [['Working Capital', 'working-capital-loans'], ['Business Expansion Finance', 'business-expansion-finance'], ['Unsecured Business Loans', 'unsecured-business-loans']], watch: 'Short operating history and losses in early years; lenders look for revenue quality and runway.' },
+];
+---
+<Base title="Who We Work With | MSMEs, Manufacturers, Traders | FV Funding" description="Business funding advisory for manufacturers, traders, service firms, exporters and growing companies: typical needs, facilities and what lenders watch for.">
+  <PageHero crumbs={[{ label: 'Who we work with' }]} eyebrow="Who we work with" title="Businesses that make," highlight="trade and serve." text="Typical funding needs by type of business, the facilities that usually fit, and what lenders watch for." />
+  {segs.map((s, i) => (
+    <section class={i % 2 ? 'bg-paper' : 'bg-white'}>
+      <div class="wrap section split" style="padding-top:clamp(48px,6vw,80px);padding-bottom:clamp(48px,6vw,80px)">
+        <div class="side"><p class="eyebrow">{String(i + 1).padStart(2, '0')}</p><h2 class="h2" style="font-size:clamp(24px,3vw,34px)">{s.t}</h2></div>
+        <div class="main">
+          <p class="mono muted">Typical needs</p><p class="mt-8" style="font-size:17px;line-height:1.6">{s.needs}</p>
+          <p class="mono muted mt-24">Facilities that usually fit</p>
+          <p class="mt-8" style="display:flex;flex-wrap:wrap;gap:8px">{s.fac.map(([n, h]) => <a class="btn btn-outline btn-sm" href={`/services/${h}/`}>{n}</a>)}</p>
+          <p class="mono muted mt-24">What lenders watch for</p><p class="mt-8" style="font-size:17px;line-height:1.6">{s.watch}</p>
+        </div>
+      </div>
+    </section>
+  ))}
+  <CtaBand />
+</Base>
