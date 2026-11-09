@@ -7,5 +7,7 @@ export default defineConfig({
   site: 'https://financevinance.com',
   trailingSlash: 'always',
   build: { format: 'directory', inlineStylesheets: 'auto' },
+  // Keep every script as a separate file (no inline scripts) so the strict CSP in Base.astro works.
+  vite: { build: { assetsInlineLimit: 0 } },
   integrations: [sitemap({ filter: (page) => !page.includes('/book/thanks') })],
 });
