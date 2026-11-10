@@ -54,10 +54,10 @@
       "Video call",
       "Phone call"
     ],
-    "confirmationNote": "We will confirm your slot by email. If the time no longer works, we will offer the nearest free slot.",
+    "confirmationNote": "Your slot is held for you. We will confirm it by email shortly; video calls get a Google Meet link in the confirmation.",
     "cal": {
-      "enabled": false,
-      "username": "",
+      "enabled": true,
+      "username": "finance-vinance-pblp1o",
       "eventSlug": "funding-review"
     }
   }
