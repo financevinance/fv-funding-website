@@ -1,10 +1,13 @@
 // Booking flow for /book/.
-// At launch, bookings are sent as requests through Netlify Forms (form name "booking")
-// and emailed to the site owner. To switch to a live Cal.com calendar later, replace
-// buildDates/buildTimes with Cal.com's slots API and submitBooking with its bookings API.
+// LIVE MODE (settings.json → booking.cal.enabled + CAL_API_KEY in Netlify):
+//   dates/times come from /api/slots (Cal.com, reading the funding@ Google Calendar) so booked or busy
+//   times never show; the request goes to /api/book (Cal.com, "requires confirmation") and the owner
+//   confirms by email, which creates the calendar event and the Google Meet link.
+// FALLBACK MODE (live off, or the calendar can't be reached): fixed hours from settings.json and the
+//   request is sent through Netlify Forms (form "booking"). A Netlify Forms copy is also kept in live mode.
 
 type Svc = { id: string; title: string; note: string; docs: string[] };
-type Cfg = { services: Svc[]; booking: { openHour: number; closeHour: number; slotMinutes: number; daysAhead: number; minNoticeHours: number; openDays: number[]; blockedDates: string[]; modes: string[] }; brand: string; email: string; baseDocs: string[] };
+type Cfg = { services: Svc[]; booking: { openHour: number; closeHour: number; slotMinutes: number; daysAhead: number; minNoticeHours: number; openDays: number[]; blockedDates: string[]; modes: string[]; cal?: { enabled?: boolean } }; brand: string; email: string; baseDocs: string[] };
 
 const cfg: Cfg = JSON.parse(document.getElementById('booking-data')!.textContent || '{}');
 const form = document.querySelector<HTMLFormElement>('[data-booking]')!;
@@ -13,6 +16,9 @@ const $$ = <T extends Element = HTMLElement>(sel: string, root: ParentNode = for
 
 const IST_OFFSET = 330; // minutes
 const state = { step: 1, service: '', mode: '', date: '', time: -1 };
+// live = free slots from Cal.com (minutes after midnight IST per date); null = fallback mode
+let live: Record<string, number[]> | null = null;
+let liveLoading = false;
 
 // ---------- time helpers (all booking times are India Standard Time) ----------
 function nowIST(): Date { const n = new Date(); return new Date(n.getTime() + (IST_OFFSET + n.getTimezoneOffset()) * 60000); }
@@ -28,6 +34,10 @@ function utcStamp(dateStr: string, mins: number) {
 
 function slotsFor(dateStr: string) {
   const b = cfg.booking, out: { mins: number; ok: boolean }[] = [];
+  if (live) {
+    if (b.blockedDates.includes(dateStr)) return out;
+    return (live[dateStr] || []).map((mins) => ({ mins, ok: true }));
+  }
   const now = nowIST();
   const isToday = dateStr === ymd(now);
   const earliest = now.getHours() * 60 + now.getMinutes() + b.minNoticeHours * 60;
@@ -40,13 +50,14 @@ function slotsFor(dateStr: string) {
 function buildDates() {
   const box = $('[data-dates]');
   const b = cfg.booking;
+  if (liveLoading) { box.innerHTML = '<p class="muted" role="status">Checking live availability…</p>'; return; }
   const start = nowIST(); start.setHours(12, 0, 0, 0);
   const dows = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
   box.innerHTML = '';
   for (let i = 0; i < b.daysAhead; i++) {
     const d = new Date(start.getTime() + i * 86400000);
     const key = ymd(d);
-    const closed = !b.openDays.includes(d.getDay()) || b.blockedDates.includes(key) || !slotsFor(key).some((s) => s.ok);
+    const closed = (!live && !b.openDays.includes(d.getDay())) || b.blockedDates.includes(key) || !slotsFor(key).some((s) => s.ok);
     const btn = document.createElement('button');
     btn.type = 'button'; btn.className = 'opt-btn date-btn'; btn.dataset.value = key;
     btn.disabled = closed;
@@ -62,7 +73,8 @@ function buildTimes() {
   const box = $('[data-times]');
   $('[data-date-label]').textContent = state.date ? `${longDate(state.date)} · all times IST · 30 minutes` : '';
   box.innerHTML = '';
-  slotsFor(state.date).forEach((s) => {
+  // In live mode only free times are listed; booked/busy times are not shown at all.
+  slotsFor(state.date).filter((s) => !live || s.ok).forEach((s) => {
     const btn = document.createElement('button');
     btn.type = 'button'; btn.className = 'opt-btn time-btn'; btn.disabled = !s.ok;
     btn.textContent = timeLabel(s.mins);
@@ -122,7 +134,53 @@ function validateDetails() {
   return ok;
 }
 
+async function loadLive() {
+  if (!cfg.booking.cal?.enabled) return;
+  liveLoading = true; if (state.step === 3) buildDates();
+  try {
+    const start = nowIST(); start.setHours(12, 0, 0, 0);
+    const end = new Date(start.getTime() + (cfg.booking.daysAhead - 1) * 86400000);
+    const r = await fetch(`/api/slots?start=${ymd(start)}&end=${ymd(end)}`, { cache: 'no-store' });
+    const data = await r.json();
+    live = r.ok && data.live ? data.slots || {} : null;
+  } catch { live = null; }
+  liveLoading = false;
+  if (state.date && !slotsFor(state.date).length) { state.date = ''; state.time = -1; }
+  if (state.step === 3) buildDates();
+  if (state.step === 4) buildTimes();
+}
+
+function startISO() {
+  const [y, mo, d] = state.date.split('-').map(Number);
+  return new Date(Date.UTC(y, mo - 1, d, 0, 0, 0) + (state.time - IST_OFFSET) * 60000).toISOString();
+}
+
+class SlotTaken extends Error {}
+
+async function bookLive() {
+  const val = (n: string) => (field(n) as HTMLInputElement | null)?.value?.trim() || '';
+  const r = await fetch('/api/book', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ start: startISO(), service: svc()?.title || state.service, mode: state.mode, name: val('name'), email: val('email'),
+      mobile: '+91' + digits(), business: val('business'), turnover: val('turnover'), amount: val('amount'), message: val('message'), source: val('source'), website: val('bot-field') }),
+  });
+  if (r.status === 409) throw new SlotTaken();
+  if (!r.ok) throw new Error('live booking failed ' + r.status);
+}
+
 async function submitBooking() {
+  if (live) {
+    let liveOk = false;
+    try { await bookLive(); liveOk = true; }
+    catch (e) { if (e instanceof SlotTaken) throw e; }
+    // Keep a copy in Netlify Forms (also the safety net if the calendar service is down).
+    try { await submitForm(); } catch (e) { if (!liveOk) throw e; }
+    return;
+  }
+  await submitForm();
+}
+
+async function submitForm() {
   const s = svc();
   field('service')!.value = s ? s.title : state.service;
   field('meeting_mode')!.value = state.mode;
@@ -184,7 +242,13 @@ $('[data-next]').addEventListener('click', async () => {
     const btn = $<HTMLButtonElement>('[data-next]');
     btn.disabled = true; btn.textContent = 'Sending…';
     try { await submitBooking(); showDone(); }
-    catch { btn.disabled = false; btn.textContent = 'Confirm booking'; showErr('submit', `Sorry, the booking could not be sent. Please try again, or email ${cfg.email}.`); }
+    catch (e) {
+      if (e instanceof SlotTaken) {
+        btn.disabled = false; btn.textContent = 'Confirm booking';
+        state.time = -1; state.step = 4; await loadLive(); render();
+        return showErr('step', 'Sorry, that time was just taken. Please pick another time.');
+      }
+      btn.disabled = false; btn.textContent = 'Confirm booking'; showErr('submit', `Sorry, the booking could not be sent. Please try again, or email ${cfg.email}.`); }
     return;
   }
   state.step += 1; render();
@@ -201,3 +265,4 @@ if (pre && cfg.services.some((s) => s.id === pre)) { state.service = pre; state.
 field('source')!.value = params.get('from') || document.referrer.replace(location.origin, '') || 'direct';
 if (cfg.booking.modes.length === 1) state.mode = cfg.booking.modes[0];
 render();
+loadLive();

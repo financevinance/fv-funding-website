@@ -10,7 +10,10 @@
   "city": "Ahmedabad",
   "state": "Gujarat",
   "country": "India",
-  "areaServed": ["Gujarat", "India"],
+  "areaServed": [
+    "Gujarat",
+    "India"
+  ],
   "hoursText": "10 am – 7 pm IST, every day",
   "legal": {
     "entityName": "Finance Vinance",
@@ -37,9 +40,25 @@
     "slotMinutes": 30,
     "daysAhead": 21,
     "minNoticeHours": 3,
-    "openDays": [0, 1, 2, 3, 4, 5, 6],
+    "openDays": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
     "blockedDates": [],
-    "modes": ["Video call", "Phone call"],
-    "confirmationNote": "We will confirm your slot by email. If the time no longer works, we will offer the nearest free slot."
+    "modes": [
+      "Video call",
+      "Phone call"
+    ],
+    "confirmationNote": "We will confirm your slot by email. If the time no longer works, we will offer the nearest free slot.",
+    "cal": {
+      "enabled": false,
+      "username": "",
+      "eventSlug": "funding-review"
+    }
   }
 }

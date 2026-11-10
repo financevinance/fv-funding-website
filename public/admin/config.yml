@@ -1,5 +1,5 @@
 # FV Funding admin panel (Sveltia CMS, Decap-compatible).
-# 1) Repository: github.com/financevinance/fv-funding-website (private).
+# 1) Replace REPLACE_WITH_GITHUB_USERNAME below with the GitHub account that owns the repository.
 # 2) See WEBSITE-GUIDE.md in the project root for the one-time login setup.
 backend:
   name: github
@@ -126,6 +126,14 @@ collections:
               - { name: blockedDates, label: Holidays / blocked dates (YYYY-MM-DD), widget: list, required: false, field: { name: date, label: Date, widget: string } }
               - { name: modes, label: Meeting options, widget: list, field: { name: mode, label: Option, widget: string } }
               - { name: confirmationNote, label: Note after booking, widget: text }
+              - name: cal
+                label: Live calendar (Cal.com)
+                widget: object
+                hint: When ON, the booking page shows only free slots from your Google Calendar and sends requests to Cal.com for you to Confirm/Reject. Needs the CAL_API_KEY set in Netlify.
+                fields:
+                  - { name: enabled, label: Live calendar ON, widget: boolean, default: false }
+                  - { name: username, label: Cal.com username, widget: string, required: false }
+                  - { name: eventSlug, label: Cal.com event slug, widget: string, default: funding-review }
 
       - name: home
         label: Homepage text
